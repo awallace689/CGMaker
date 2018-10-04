@@ -16,6 +16,14 @@ class Hand:
         except IndexError:
             self._cards = list()
 
+    def __str__(self):
+        string = ""
+        for card in self.cards:
+            string = ", " + string + str(card)
+
+        string = string[2:]
+        return ("Length: %d\n" % self._cards.__len__()) + string
+
     @property
     def cards(self):
         return self._cards
@@ -40,7 +48,8 @@ class Hand:
             self.cards.append(card)
 
     def discard(self, index):
-        assert (index < self.size and index >= 0)
+        assert (index < self.size)
+        assert (index >= 0)
         discarded = self.cards[index]
         self._cards.remove(index)
         return discarded
@@ -49,15 +58,3 @@ class Hand:
         temp = self.cards[i]
         self.cards[i] = self.cards[j]
         self.cards[j] = temp
-
-    # ====================================================================================================
-    # INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL
-    # ====================================================================================================
-
-    def __str__(self):
-        string = ""
-        for card in self.cards:
-            string = ", " + string + str(card)
-
-        string = string[2:]
-        return ("Length: %d\n" % self._cards.__len__()) + string

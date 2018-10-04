@@ -1,26 +1,25 @@
 """
-#====================================================================================================
+====================================================================================================
 @Author: Adam Wallace
 @Date: 9/30/2018
 @About: A Deck class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
         Wraps a deck, its discard pile, and several basic functions to be performed on one/both.
-#====================================================================================================
+====================================================================================================
 """
-from Deck.Card import Card
-from Deck.Card import Rank
-from Deck.Card import Suit
+from Deck.Card import *
 from random import shuffle as random_shuffle
 
 
 class DeckWrapper:
 
-    def __init__(self, *args):
+    def __init__(self, *args):  # TODO: fix optional parameter implementation
         """If no parameter provided, deck will be automatically generated and shuffled."""
         arg = None
         self._deck = None
         self._discard = None
 
         if args:
+            assert isinstance(args[0], DeckWrapper)
             arg = args[0]
         try:
             if arg is None:
@@ -38,6 +37,7 @@ class DeckWrapper:
 
     @deck.setter
     def deck(self, d):
+        assert isinstance(d, DeckWrapper)
         self._deck = d.deck
 
     @property
@@ -46,6 +46,7 @@ class DeckWrapper:
 
     @discard_deck.setter
     def discard_deck(self, d):
+        assert isinstance(d, DeckWrapper)
         self._discard = d.discard_deck
 
     @property
@@ -81,16 +82,17 @@ class DeckWrapper:
         return deck[0]
 
     @staticmethod
-    def print_deck(deck):
+    def print_deck(m_deck):
         """Creates and returns list of 2-tuples, formatted (Rank, Suit), one tuple per card"""
+        assert isinstance(m_deck, list)
         p_deck = []
-        for card in deck:
+        for card in m_deck:
             p_deck.append(tuple((card.rank.name, card.suit.name)))
-        return ("Length: %d \n" % deck.__len__()) + str(p_deck)
+        return ("Length: %d \n" % m_deck.__len__()) + str(p_deck)
 
-    #====================================================================================================
-    # INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL
-    #====================================================================================================
+# ===================================================================================================
+# INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL
+# ===================================================================================================
 
     def draw_deck(self):
         drawn = self._deck[0]
