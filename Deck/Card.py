@@ -72,4 +72,7 @@ class Card:
     def __eq__(self, other):
         return self.rank == other.rank
 
+    def __ne__(self, other):
+        return not (self == other)
+
 
