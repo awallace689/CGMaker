@@ -1,7 +1,12 @@
-from Deck.DeckWrapper import DeckWrapper as DWrap
+"""
+#====================================================================================================
+@Author: Adam Wallace
+@Date: 10/3/2018
+@About: A Hand class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
+#====================================================================================================
+"""
 from Deck.Card import Card
-from Deck.Card import Rank
-from Deck.Card import Suit
+
 
 class Hand:
     def __init__(self, *args):
@@ -27,10 +32,32 @@ class Hand:
     def is_empty(self):
         return self._cards.__len__() == 0
 
-    def add(self, card):
+    def add(self, card, index=None):
         assert isinstance(card, Card)
+        if index is not None:
+            self.cards.insert(index, card)
+        else:
+            self.cards.append(card)
 
+    def discard(self, index):
+        assert (index < self.size and index >= 0)
+        discarded = self.cards[index]
+        self._cards.remove(index)
+        return discarded
 
-h = Hand()
-card = Card(Rank.ace, Suit.spade)
+    def swap(self, i, j):
+        temp = self.cards[i]
+        self.cards[i] = self.cards[j]
+        self.cards[j] = temp
 
+    # ====================================================================================================
+    # INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL
+    # ====================================================================================================
+
+    def __str__(self):
+        string = ""
+        for card in self.cards:
+            string = ", " + string + str(card)
+
+        string = string[2:]
+        return ("Length: %d\n" % self._cards.__len__()) + string
