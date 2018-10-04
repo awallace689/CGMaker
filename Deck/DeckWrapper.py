@@ -4,13 +4,15 @@
 @Date: 9/30/2018
 @About: A Deck class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
         Wraps a deck, its discard pile, and several basic functions to be performed on one/both.
+@Note: Interact with this class via its interface 'ABCDeckWrapper.py"
 ====================================================================================================
 """
+from Deck.ABCDeckWrapper import DeckWrapperInterface
 from Deck.Card import *
 from random import shuffle as random_shuffle
 
 
-class DeckWrapper:
+class DeckWrapper(DeckWrapperInterface):
 
     def __init__(self, *args):  # TODO: fix optional parameter implementation
         """If no parameter provided, deck will be automatically generated and shuffled."""
