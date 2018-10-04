@@ -1,7 +1,7 @@
 """
 @Author: Adam Wallace
 @Date: 9/30/2018
-@About: Contains enums for possible card Ranks and Suits, as well as Card class for use with DeckWrapper.py
+@About: Contains enums for possible card Ranks and Suits, as well as Card class for use with Deck_Wrapper.py
 """
 from enum import Enum
 
