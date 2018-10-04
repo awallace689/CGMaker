@@ -1,8 +1,10 @@
 """
+#====================================================================================================
 @Author: Adam Wallace
 @Date: 9/30/2018
 @About: A Deck class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
         Wraps a deck, its discard pile, and several basic functions to be performed on one/both.
+#====================================================================================================
 """
 from Deck.Card import Card
 from Deck.Card import Rank
@@ -22,8 +24,6 @@ class DeckWrapper:
             arg = args[0]
         try:
             if arg is None:
-                self.reset()
-            elif isinstance(arg.peek(), Card):
                 self._deck = arg.deck
                 self._discard = arg.discard_deck
             else:
@@ -49,7 +49,7 @@ class DeckWrapper:
         self._discard = d.discard_deck
 
     @property
-    def size(self):
+    def deck_size(self):
         return self.deck.__len__()
 
     @property
@@ -87,6 +87,10 @@ class DeckWrapper:
         for card in deck:
             p_deck.append(tuple((card.rank.name, card.suit.name)))
         return ("Length: %d \n" % deck.__len__()) + str(p_deck)
+
+    #====================================================================================================
+    # INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL
+    #====================================================================================================
 
     def draw_deck(self):
         drawn = self._deck[0]
