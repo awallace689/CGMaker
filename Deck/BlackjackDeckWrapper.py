@@ -2,7 +2,7 @@
 ====================================================================================================
 @Author: Adam Wallace
 @Date: 10/4/2018
-@About: A subclass of DeckWrapper meant for use with Blackjack game.
+@About: A subclass of DeckWrapper meant for use with Blackjack rules set.
 ====================================================================================================
 """
 from Deck.DeckWrapper import DeckWrapper
@@ -26,8 +26,3 @@ class BlackjackDeck(DeckWrapper):
         for i in range(6):
             deck = deck + DeckWrapper.new_deck()
         return deck
-
-
-bj_deck = BlackjackDeck()
-print_deck = bj_deck.deck
-print(bj_deck.format(print_deck))
