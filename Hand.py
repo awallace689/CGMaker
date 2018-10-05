@@ -11,7 +11,7 @@ from Deck.Card import Card
 class Hand:
     def __init__(self, *args):
         try:
-            arg = args[0]
+            arg: Hand = args[0]
             self._cards = arg.cards
         except IndexError:
             self._cards = list()
@@ -29,7 +29,7 @@ class Hand:
         return self._cards
 
     @cards.setter
-    def cards(self, c):
+    def cards(self, c: list):
         self._cards = c
 
     @property

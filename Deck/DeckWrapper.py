@@ -4,34 +4,26 @@
 @Date: 9/30/2018
 @About: A Deck class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
         Wraps a deck, its discard pile, and several basic functions to be performed on one/both.
-@Note: Interact with this class via its interface 'ABCDeckWrapper.py"
+@Note: Modular design and minimal method complexity allows class to serve many games and rule sets.
 ====================================================================================================
 """
-from Deck.ABCDeckWrapper import DeckWrapperInterface
 from Deck.Card import *
 from random import shuffle as random_shuffle
 
 
-class DeckWrapper(DeckWrapperInterface):
+class DeckWrapper:
 
     def __init__(self, *args):  # TODO: fix optional parameter implementation
         """If no parameter provided, deck will be automatically generated and shuffled."""
-        arg = None
-        self._deck = None
-        self._discard = None
 
         if args:
             assert isinstance(args[0], DeckWrapper)
             arg = args[0]
-        try:
-            if arg is None:
-                self._deck = arg.deck
-                self._discard = arg.discard_deck
-            else:
-                raise AttributeError
-        except AttributeError:
-            raise ValueError("Expected 'arg' (parameter) type as 'Deck' or 'None', got '%s' instead.)"
-                             % str(type(arg)))
+            self._deck = arg.deck
+            self._discard = arg.discard_deck
+        else:
+            self._deck = DeckWrapper.new_deck()
+            self._discard = list()
 
     @property
     def deck(self):
@@ -80,11 +72,11 @@ class DeckWrapper(DeckWrapperInterface):
         return deck
 
     @staticmethod
-    def peek(deck):
+    def peek(deck: list):
         return deck[0]
 
     @staticmethod
-    def print_deck(m_deck):
+    def print_deck(m_deck: list):
         """Creates and returns list of 2-tuples, formatted (Rank, Suit), one tuple per card"""
         assert isinstance(m_deck, list)
         p_deck = []
@@ -93,7 +85,7 @@ class DeckWrapper(DeckWrapperInterface):
         return ("Length: %d \n" % m_deck.__len__()) + str(p_deck)
 
 # ===================================================================================================
-# INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL
+#                                      **DECK-EDITING METHODS**
 # ===================================================================================================
 
     def draw_deck(self):
