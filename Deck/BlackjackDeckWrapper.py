@@ -20,9 +20,14 @@ class BlackjackDeck(DeckWrapper):
         else:
             self._deck = self.new_deck(shuffle=True)
 
-    @staticmethod
-    def new_deck(shuffle=True):
+    @classmethod
+    def new_deck(cls, shuffle=True):
         deck = list()
         for i in range(6):
-            deck.append(DeckWrapper.new_deck(shuffle=shuffle))
+            deck.append(DeckWrapper.new_deck(DeckWrapper, shuffle=shuffle))
         return deck
+
+
+bj_deck = BlackjackDeck()
+print_deck = bj_deck.deck
+print(bj_deck.format(print_deck))
