@@ -1,5 +1,2 @@
-from .Card import Card
-from .Card import Suit
-from .Card import Rank
-from .BlackjackDeckWrapper import BlackjackDeck
-from .DeckWrapper import DeckWrapper
+from Deck.Card import Card, Rank, Suit
+from Deck.DeckWrapper import DeckWrapper

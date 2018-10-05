@@ -82,7 +82,7 @@ class DeckWrapper:
         assert isinstance(m_deck, list)
         p_deck = []
         for card in m_deck:
-            p_deck.append(tuple((card.rank.name, card.suit.name)))
+            p_deck.append((card.rank.name, card.suit.name))
         return ("Length: %d \n" % m_deck.__len__()) + str(p_deck)
 
 # ===================================================================================================
