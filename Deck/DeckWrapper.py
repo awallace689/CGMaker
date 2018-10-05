@@ -60,7 +60,7 @@ class DeckWrapper:
         return self._discard.__len__() == 0
 
     @staticmethod
-    def new_deck(cls, shuffle=True):
+    def new_deck(shuffle=True):
         """Creates new deck of length 52, no Jokers, and shuffles it using random.shuffle()"""
         deck = list()
         for s in Suit:
@@ -75,13 +75,13 @@ class DeckWrapper:
     def peek(deck: list):
         return deck[0]
 
-    @classmethod
-    def format(cls, m_deck: list):
+    @staticmethod
+    def format(m_deck: list):
         """Creates and returns list of 2-tuples, formatted (Rank, Suit), one tuple per card"""
         assert isinstance(m_deck, list)
         p_deck = []
-        for index in m_deck:
-            p_deck.append(tuple((m_deck[index].rank, m_deck[index].suit)))
+        for card in m_deck:
+            p_deck.append(tuple((card.rank.name, card.suit.name)))
         return ("Length: %d \n" % m_deck.__len__()) + str(p_deck)
 
 # ===================================================================================================
