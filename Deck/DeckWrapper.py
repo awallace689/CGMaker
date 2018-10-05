@@ -4,7 +4,8 @@
 @Date: 9/30/2018
 @About: A Deck class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
         Wraps a deck, its discard pile, and several basic functions to be performed on one/both.
-@Note: Modular design and minimal method complexity allows class to serve many games and rule sets.
+@Note: Modular design and minimal method complexity allows class to serve as superclass for a variety
+       of game decks.
 ====================================================================================================
 """
 from Deck.Card import *
@@ -22,7 +23,7 @@ class DeckWrapper:
             self._deck = arg.deck
             self._discard = arg.discard_deck
         else:
-            self._deck = DeckWrapper.new_deck(DeckWrapper)
+            self._deck = DeckWrapper.new_deck()
             self._discard = list()
 
     @property
