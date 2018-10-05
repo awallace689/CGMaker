@@ -5,7 +5,7 @@
 @About: A subclass of DeckWrapper meant for use with Blackjack rules set.
 ====================================================================================================
 """
-from Deck import DeckWrapper
+from Deck.DeckWrapper import DeckWrapper
 
 
 class BlackjackDeck(DeckWrapper):
@@ -24,5 +24,5 @@ class BlackjackDeck(DeckWrapper):
     def new_deck(shuffle=True):
         deck = list()
         for i in range(6):
-            deck = deck + DeckWrapper.new_deck()
+            deck = deck + DeckWrapper.new_deck(shuffle=shuffle)
         return deck
