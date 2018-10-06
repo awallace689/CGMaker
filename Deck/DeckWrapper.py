@@ -14,17 +14,15 @@ from random import shuffle as random_shuffle
 
 class DeckWrapper:
 
-    def __init__(self, *args):  # TODO: fix optional parameter implementation
+    def __init__(self, other=None):
         """If no parameter provided, deck will be automatically generated and shuffled."""
-
-        if args:
-            assert isinstance(args[0], DeckWrapper)
-            arg = args[0]
-            self._deck = arg.deck
-            self._discard = arg.discard_deck
+        if other is not None:
+            assert isinstance(other, DeckWrapper)
+            self._deck = other.deck
+            self._discard = other.discard_deck
         else:
             self._deck = DeckWrapper.new_deck()
-            self._discard = list()
+            self._discard = []
 
     @property
     def deck(self):
@@ -63,7 +61,7 @@ class DeckWrapper:
     @staticmethod
     def new_deck(shuffle=True):
         """Creates new deck of length 52, no Jokers, and shuffles it using random.shuffle()"""
-        deck = list()
+        deck = []
         for s in Suit:
             for r in Rank:
                 new_card = Card(r, s)
@@ -107,4 +105,4 @@ class DeckWrapper:
             self._deck = DeckWrapper.new_deck()
         else:
             self._deck = DeckWrapper.new_deck(shuffle=False)
-        self._discard = list()
+        self._discard = []

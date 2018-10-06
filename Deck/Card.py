@@ -2,8 +2,7 @@
 =====================================================================================================
 @Author: Adam Wallace
 @Date: 9/30/2018
-@About: Contains enums for possible card Ranks and Suits, as well as Card class for use with DeckWrapper.py
-@Note: Interact with this class via its interface 'Interface_Card.py"
+@About: Contains enums for possible card Ranks (King-high) and Suits, as well as Card class for use with DeckWrapper.py
 =====================================================================================================
 """
 from enum import Enum
@@ -33,11 +32,15 @@ class Suit(Enum):
 
 
 class Card:
-    def __init__(self, rank, suit):
-        assert isinstance(rank, Rank)
-        assert isinstance(suit, Suit)
-        self._rank = rank
-        self._suit = suit
+    def __init__(self, rank=None, suit=None):
+        if rank is not None or suit is not None:
+            assert isinstance(rank, Rank)
+            assert isinstance(suit, Suit)
+            self._rank = rank
+            self._suit = suit
+        else:
+            self._rank = rank
+            self._suit = suit
 
     @property
     def rank(self):

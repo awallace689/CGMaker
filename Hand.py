@@ -9,12 +9,12 @@ from Deck.Card import Card
 
 
 class Hand:
-    def __init__(self, *args):
-        try:
-            arg: Hand = args[0]
-            self._cards = arg.cards
-        except IndexError:
-            self._cards = list()
+    def __init__(self, other=None):
+        if other is not None:
+            assert isinstance(other, Hand)
+            self._cards = other.cards
+        else:
+            self._cards = []
 
     def __str__(self):
         string = ""
