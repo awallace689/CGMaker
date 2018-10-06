@@ -37,12 +37,3 @@ class BlackjackCard(Card):
             assert isinstance(suit, Suit)
             self._rank = rank
             self._suit = suit
-
-
-b = BlackjackCard(BlackjackRank.ace, Suit.spade)
-print(b.rank)
-
-
-
-
-
