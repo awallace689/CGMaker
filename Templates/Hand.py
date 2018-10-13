@@ -5,7 +5,7 @@
 @About: A Hand class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
 #====================================================================================================
 """
-from Deck.Card import Card
+from Templates.Card import Card
 
 
 class Hand:
@@ -47,7 +47,7 @@ class Hand:
         else:
             self.cards.append(card)
 
-    def discard(self, index):
+    def take(self, index=0):
         assert (index < self.size)
         assert (index >= 0)
         discarded = self.cards[index]
@@ -58,3 +58,16 @@ class Hand:
         temp = self.cards[i]
         self.cards[i] = self.cards[j]
         self.cards[j] = temp
+
+    def check_index(self, func, *args):
+        assert (args[0] < self.size)
+        assert (args[0] >= 0)
+        f = func(*args[0])
+        return f
+
+    @check_index
+    def peek(self, index=0):
+        return self.cards[index]
+
+
+

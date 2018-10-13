@@ -2,14 +2,14 @@
 ====================================================================================================
 @Author: Adam Wallace
 @Date: 9/30/2018
-@About: A Deck class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
+@About: A Templates class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
         Wraps a deck, its discard pile ('discard_deck'), and several basic functions to be performed on one/both.
 @Note: Modular design and minimal method complexity allows class to serve as superclass for a variety
        of game decks.
 ====================================================================================================
 """
-from Deck.Card import *
-from random import shuffle as random_shuffle
+from Templates.Card import *
+from random import shuffle as rshuffle
 
 
 class DeckWrapper:
@@ -64,10 +64,10 @@ class DeckWrapper:
         deck = []
         for s in Suit:
             for r in Rank:
-                new_card = Card(r, s)
-                deck.append(new_card)
+                arr_new_card = [Card(r, s)]
+                deck = deck + arr_new_card
         if shuffle:
-            random_shuffle(deck)
+            rshuffle(deck)  # random.shuffle
         return deck
 
     @staticmethod
@@ -75,13 +75,13 @@ class DeckWrapper:
         return deck[0]
 
     @staticmethod
-    def format(m_deck: list):
+    def format(deck: list):
         """Creates and returns list of 2-tuples, formatted (Rank, Suit), one tuple per card"""
-        assert isinstance(m_deck, list)
+        assert isinstance(deck, list)
         p_deck = []
-        for card in m_deck:
+        for card in deck:
             p_deck.append((card.rank.name, card.suit.name))
-        return ("Length: %d \n" % m_deck.__len__()) + str(p_deck)
+        return ("Length: %d \n" % deck.__len__()) + str(p_deck)
 
 # ===================================================================================================
 #                                      **DECK-ALTERING METHODS**

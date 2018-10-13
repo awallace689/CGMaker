@@ -64,19 +64,19 @@ class Card:
         return "%s of %ss" % (self.rank.name, self.suit.name)
 
     def __lt__(self, other):
-        return self.rank < other.rank
+        return self.rank.value < other.rank.value
 
     def __le__(self, other):
-        return self.rank <= other.rank
+        return self.rank.value <= other.rank.value
 
     def __gt__(self, other):
-        return self.rank > other.rank
+        return self.rank.value > other.rank.value
 
     def __ge__(self, other):
-        return self.rank >= other.rank
+        return self.rank.value >= other.rank.value
 
     def __eq__(self, other):
-        return self.rank == other.rank
+        return self.rank.value == other.rank.value
 
     def __ne__(self, other):
         return not (self == other)
