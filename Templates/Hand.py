@@ -50,8 +50,8 @@ class Hand:
     def take(self, index=0):
         assert (index < self.size)
         assert (index >= 0)
-        selected = self.cards[index]
-        self._cards.remove(index)
+        selected = self._cards[index]
+        self._cards.remove(self._cards[index])
         return selected
 
     def swap(self, i, j):
@@ -62,12 +62,6 @@ class Hand:
         temp = self.cards[i]
         self.cards[i] = self.cards[j]
         self.cards[j] = temp
-
-    def check_index(self, func, *args):
-        assert (args[0] < self.size)
-        assert (args[0] >= 0)
-        f = func(*args[0])
-        return f
 
     def peek(self, index=0):
         return self.cards[index]

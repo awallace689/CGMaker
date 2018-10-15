@@ -103,8 +103,8 @@ class DeckWrapper:
 
     def add_discard(self, *args):
         for card in args:
-            assert issubclass(card, Card)
-        self.discard_deck.append(card)
+            assert isinstance(card, Card)
+            self.discard_deck.append(card)
 
     def reset(self, shuffle=True):
         if shuffle:

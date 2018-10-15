@@ -63,20 +63,26 @@ class Card:
     def __str__(self):
         return "%s of %ss" % (self.rank.name, self.suit.name)
 
-    def __lt__(self, other):
+    def __lt__(self, other):                                    # TODO: remove instance checks
+        assert(isinstance(other, Card))
         return self.rank.value < other.rank.value
 
     def __le__(self, other):
+        assert(isinstance(other, Card))
         return self.rank.value <= other.rank.value
 
     def __gt__(self, other):
+        assert(isinstance(other, Card))
         return self.rank.value > other.rank.value
 
     def __ge__(self, other):
+        assert(isinstance(other, Card))
         return self.rank.value >= other.rank.value
 
     def __eq__(self, other):
+        assert(isinstance(other, Card))
         return self.rank.value == other.rank.value
 
     def __ne__(self, other):
+        assert(isinstance(other, Card))
         return not (self == other)

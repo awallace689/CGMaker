@@ -1,7 +1,7 @@
 from Templates.Hand import Hand
 
 
-class Player():
+class Player:
     hand = Hand()
 
     def __init__(self, bank=500):

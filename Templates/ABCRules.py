@@ -5,8 +5,15 @@
 @About: An Abstract Base Class for card game rules sets.
 ====================================================================================================
 """
-from abc import ABC, abstractmethod, abstractstaticmethod, abstractproperty
+from abc import ABC
 
 
 class ABCRules(ABC):
-    pass
+    @property
+    def phases(self):
+        pass
+
+    @property
+    def methods(self):
+        pass
+

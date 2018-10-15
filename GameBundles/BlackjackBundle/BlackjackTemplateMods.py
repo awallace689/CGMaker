@@ -9,6 +9,7 @@
 from Templates.DeckWrapper import DeckWrapper
 from Templates.Card import Card, Suit
 from enum import Enum
+from random import shuffle as rshuffle
 
 
 class BlackjackDeck(DeckWrapper):
@@ -20,13 +21,14 @@ class BlackjackDeck(DeckWrapper):
             self._deck = other.deck
             self._discard = other.discard_deck
         else:
-            self._deck = self.new_deck(shuffle=True)
+            self._deck = BlackjackDeck.new_deck(shuffle=True)
 
     @staticmethod
     def new_deck(shuffle=True):
-        deck = []
-        for i in range(6):
-            deck += DeckWrapper.new_deck(shuffle=shuffle)
+        deck = DeckWrapper.new_deck(shuffle)
+        deck = deck * 6
+        if shuffle:
+            rshuffle(deck)
         return deck
 
 
@@ -41,9 +43,9 @@ class BlackjackRank(Enum):
     eight = 8
     nine = 9
     ten = 10
-    jack = 10
-    queen = 10
-    king = 10
+    jack = 11
+    queen = 12
+    king = 13
 
 
 class BlackjackCard(Card):
@@ -58,3 +60,9 @@ class BlackjackCard(Card):
             assert isinstance(suit, Suit)
             self._rank = rank
             self._suit = suit
+
+    @property
+    def rank(self):
+
+
+
