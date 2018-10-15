@@ -61,7 +61,7 @@ class Card:
         self._suit = s
 
     def __str__(self):
-        return "%s of %ss" % (self.rank.name, self.suit.name)
+        return "%s of %ss" % (self._rank.name, self._suit.name)
 
     def __lt__(self, other):                                    # TODO: remove instance checks
         assert(isinstance(other, Card))
