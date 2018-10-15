@@ -8,10 +8,12 @@ def draw_two(d: BlackjackDeck):
     hand1.add(b.draw_deck())
     hand2.add(b.draw_deck())
 
-    if hand1.cards[0] > hand2.cards[0]:
-        print('Card 1: {} beats Card 2: {}'.format(str(card1), str(card2)))
+    if hand1.peek() > hand2.peek():
+        print('Card 1: {} beats Card 2: {}'.format(hand1.peek(), hand2.peek()))
+        d.discard(hand1.take(), hand2.take())
     else:
-        print('Card 2: {} beats Card 1: {}'.format(str(card2), str(card1)))
+        print('Card 2: {} beats Card 1: {}'.format(hand1.peek(), hand2.peek()))
+        d.discard(hand1.take(), hand2.take())
 
 
 b = BlackjackDeck()
