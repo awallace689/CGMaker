@@ -5,23 +5,31 @@
 @About: A Hand class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
 #====================================================================================================
 """
-from Deck.Card import Card
+from Templates.Card import Card
 
 
 class Hand:
-    def __init__(self, *args):
-        try:
-            arg = args[0]
-            self._cards = arg.cards
-        except IndexError:
-            self._cards = list()
+    def __init__(self, other=None):
+        if other is not None:
+            assert isinstance(other, Hand)
+            self._cards = other.cards
+        else:
+            self._cards = []
+
+    def __str__(self):
+        string = ""
+        for card in self.cards:
+            string = ", " + string + str(card)
+
+        string = string[2:]
+        return ("Length: %d\n" % self._cards.__len__()) + string
 
     @property
     def cards(self):
         return self._cards
 
     @cards.setter
-    def cards(self, c):
+    def cards(self, c: list):
         self._cards = c
 
     @property
@@ -39,25 +47,24 @@ class Hand:
         else:
             self.cards.append(card)
 
-    def discard(self, index):
-        assert (index < self.size and index >= 0)
-        discarded = self.cards[index]
-        self._cards.remove(index)
-        return discarded
+    def take(self, index=0):
+        assert (index < self.size)
+        assert (index >= 0)
+        selected = self._cards[index]
+        self._cards.remove(self._cards[index])
+        return selected
 
     def swap(self, i, j):
+        assert (i < self.size)
+        assert (i >= 0)
+        assert (j < self.size)
+        assert (j >= 0)
         temp = self.cards[i]
         self.cards[i] = self.cards[j]
         self.cards[j] = temp
 
-    # ====================================================================================================
-    # INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL INTERNAL
-    # ====================================================================================================
+    def peek(self, index=0):
+        return self.cards[index]
 
-    def __str__(self):
-        string = ""
-        for card in self.cards:
-            string = ", " + string + str(card)
 
-        string = string[2:]
-        return ("Length: %d\n" % self._cards.__len__()) + string
+
