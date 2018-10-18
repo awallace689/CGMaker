@@ -54,6 +54,7 @@ class BlackjackRank(Enum):
 
 
 class BlackjackCard(Card):
+    """self._rank is object type Rank, self.rank returns object type BlackjackRank"""
     def __init__(self, rank=None, suit=None):
         super().__init__()
 
