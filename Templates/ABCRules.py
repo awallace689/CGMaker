@@ -19,7 +19,6 @@ class ABCRules(ABC):
 
 
 class Phase(ABC):
-
     _methods = []
 
     @property
