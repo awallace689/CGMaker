@@ -37,14 +37,14 @@ CardGame's Future
 
 CardGame's Implementation
 
-       Contents:
-        Templates: Generic classes which provide common functionality. Extended  by GameBundles/GameRules.py.
+    Contents:
+     Templates: Generic classes which provide common functionality. Extended  by GameBundles/GameRules.py.
         
-        GameBundles: Contains a GameBundle subdirectory containing Template extensions and a GameRules.py file.
+     GameBundles: Contains a GameBundle subdirectory containing Template extensions and a GameRules.py file.
         
-        Controllers: Contains files which interact with a GameRules.py file and the user through the Menu class. 
-                     Recieves a list of Phases from file, the order in which to run them, and each Phase 
-                     provides a list of member functions. Controllers may be extended by a GameRules.py file.
+     Controllers: Contains files which interact with a GameRules.py file and the user through the Menu class. 
+                      Recieves a list of Phases from file, the order in which to run them, and each Phase 
+                      provides a list of member functions. Controllers may be extended by a GameRules.py file.
         
-        main.py: Handles GameBundle selection, as well as the creation of any Controllers necessary to run game.
+     main.py: Handles GameBundle selection, as well as the creation of any Controllers necessary to run game.
                     
