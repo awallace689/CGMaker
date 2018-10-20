@@ -1,6 +1,6 @@
 from Templates.ABCRules import ABCRules, Phase
 from Templates.Player import Player
-from GameBundles.BlackjackBundle.BlackjackTemplateMods import BlackjackDeck, BlackjackCard
+from Templates.Menu import Menu
 
 
 class BlackjackRules(ABCRules):
@@ -15,6 +15,9 @@ class BlackjackRules(ABCRules):
 
 
 class BettingPhase(Phase):
+    def __init__(self):
+        self._methods = [(self.bet, "Bet doc here.")]
+
     @property
     def methods(self):
         return self._methods
@@ -23,62 +26,36 @@ class BettingPhase(Phase):
     _methods = []
 
     def bet(self, player: Player, amount):
-        player.take_bank(amount)
+        try:
+            player.take_bank(amount)
+        except AssertionError:
+            print("*Cannot bet more than exists in bankroll.*")
+            return self.bet(player, amount)
+        return amount
 
 
-class Menu:
-    def __init__(self):
-        self._menu = "_UNASSIGNED_\n"
-
-    @property
-    def get_str(self):
-        return self._menu
-
-    def update(self, up_list):
-        print_string = ""
-        option_num = 1
-
-        for i in range(up_list):
-            print_string += "> {}) {}: {}\n".format(i + 1, str(up_list[i][0]), up_list[i][1])
-            option_num += 1
-
-        if print_string != "":
-            self._menu = print_string
-
-        if self._menu[-2] != '>':
-            self._menu += '> '
-
-        return self._menu
-
-    def generate(self, up_dict):
-        self._menu = ""
-        self._menu = self.update(up_dict)
-        return self._menu
-
-
-def get_input(up_list, info_list, menu=None):
-    if menu is None:
+def get_input(up_list=None, menu=None):
+    if up_list is None and menu is None:
         uin = input("> ")
 
-    elif isinstance(menu, Menu):
+    elif up_list is not None and isinstance(menu, Menu):
         try:
-            uin = int(input(menu.generate(up_list, info_list)))
-            assert uin <= up_list.__len__()
-            assert uin >= 1
+            uin = input(menu.generate(up_list))
+            assert int(uin) <= up_list.__len__()
+            assert int(uin) >= 1
 
-        except ValueError:
+        except (TypeError, ValueError):
+            menu.clear()
             print("*Invalid input. Try again...*")
-            return get_input(menu)
+            return get_input(up_list, menu)
 
         except AssertionError:
+            menu.clear()
             print("*Selection out of range. Try again...*")
-            return get_input(menu)
+            return get_input(up_list, menu)
 
     else:
-        raise TypeError("'menu' is type: '{}', expected object type: 'Menu'.".format(type(menu)))
-
+        raise TypeError("'menu' is type: '{}', expected object type: 'Menu'. \
+                         'up_list' is type: '{}', expected object type: 'List'.".format(type(menu),
+                                                                                        type(list)))
     return uin
-
-
-m = Menu()
-inp = get_input(BettingPhase.methods, m)

@@ -13,15 +13,13 @@ class ABCRules(ABC):
     def phases(self):
         """
         Returns dict of Phase objects:
-                {#:Phase}
+                {"Name String": Phase obj}
         """
         pass
 
 
 class Phase(ABC):
-    _methods = []
-
     @property
     def methods(self):
-        """Returns array of methods to be run in phase."""
+        """ Returns array of tuples '('method obj', 'info string')' """
         pass
