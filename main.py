@@ -23,4 +23,3 @@ from Generics.Menu import Menu
 m = Menu()
 b = BettingPhase()
 inp = get_input(b.methods, m)
-

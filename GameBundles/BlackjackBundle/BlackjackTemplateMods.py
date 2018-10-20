@@ -79,4 +79,3 @@ class BlackjackCard(Card):
     def rank(self, r):
         assert type(r) is type(Rank)
         self._rank = r
-

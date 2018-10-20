@@ -1,5 +1,5 @@
 from Generics.ABCRules import ABCRules, Phase
-from Generics.Player import Player
+from Generics.Players import Player
 from Generics.Menu import Menu
 
 
