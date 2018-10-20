@@ -28,9 +28,11 @@ class BettingPhase(Phase):
     def bet(self, player: Player, amount):
         try:
             player.take_bank(amount)
+
         except AssertionError:
             print("*Cannot bet more than exists in bankroll.*")
             return self.bet(player, amount)
+
         return amount
 
 

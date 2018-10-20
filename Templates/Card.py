@@ -38,6 +38,7 @@ class Card:
             assert isinstance(suit, Suit)
             self._rank = rank
             self._suit = suit
+
         else:
             self._rank = rank
             self._suit = suit

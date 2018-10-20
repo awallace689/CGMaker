@@ -21,6 +21,7 @@ class BlackjackDeck(DeckWrapper):
             assert isinstance(other, BlackjackDeck)
             self._deck = other.deck
             self._discard = other.discard_deck
+
         else:
             self._deck = BlackjackDeck.new_deck(shuffle=True)
 
@@ -31,8 +32,10 @@ class BlackjackDeck(DeckWrapper):
             for r in Rank:
                 deck += [BlackjackCard(r, s)]
         deck = deck * 6
+
         if shuffle:
             rshuffle(deck)
+
         return deck
 
 
@@ -61,6 +64,7 @@ class BlackjackCard(Card):
         if rank is None and suit is None:
             self._rank = rank
             self._suit = suit
+
         else:
             assert isinstance(rank, Rank)
             assert isinstance(suit, Suit)
