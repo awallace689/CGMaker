@@ -34,3 +34,14 @@ CardGame's Future
     
     Once a working console/terminal protoype is built, I plan on developing either a web application or desktop
     application that can be used instead to run the game.
+
+CardGame's Implementation
+
+       Contents:
+        Templates: Contains generic classes which provide common card-game functions. Extended as needed by GameBundles.
+        GameBundles: Contains a GameBundle subdirectory containing any Template extensions as well as a GameRules.py file.
+        Controllers: Contains files which communicate with a GameBundle's GameRules.py file. Recieves a list of Phases,
+                     the order in which to run them, and each Phase provides a list of member functions that can be run.
+                     Classes here may also be extended by a GameRules.py file.
+        main.py: Handles selecting which GameBundle to load, as well as the creation of any objects necessary to run game.
+                    
