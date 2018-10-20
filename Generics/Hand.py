@@ -55,7 +55,10 @@ class Hand:
         return selected
 
     def swap(self, i, j):
-        assert (i < self.size, i >= 0, j < self.size, j >= 0)
+        assert i < self.size
+        assert i >= 0
+        assert j < self.size
+        assert j >= 0
 
         temp = self.cards[i]
         self.cards[i] = self.cards[j]
