@@ -20,6 +20,7 @@ class DeckWrapper:
             assert isinstance(other, DeckWrapper)
             self._deck = other.deck
             self._discard = other.discard_deck
+
         else:
             self._deck = DeckWrapper.new_deck()
             self._discard = []
@@ -66,8 +67,10 @@ class DeckWrapper:
             for r in Rank:
                 arr_new_card = [Card(r, s)]
                 deck = deck + arr_new_card
+
         if shuffle:
             rshuffle(deck)  # random.shuffle
+
         return deck
 
     @staticmethod

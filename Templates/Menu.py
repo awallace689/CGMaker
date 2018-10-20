@@ -18,6 +18,7 @@ class Menu:
 
         if print_string != "":
             self._menu = print_string
+
         else:
             self._menu = "_EMPTY_\n"
 
