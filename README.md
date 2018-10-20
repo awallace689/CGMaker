@@ -28,22 +28,22 @@ CardGame's Goal
     benefits so far are best exemplified by the Blackjack implementation. 
     
     CardGame/GameBundle/BlackjackBundle/ only needs to slightly extend the functionality of some generic 
-    templated objects before all that's left to do is implement the game-specific rules and phases.
+    objects before all that's left to do is implement the game-specific rules and phases.
     
 CardGame's Future
     
-    Once a working console/terminal protoype is built, I plan on developing either a web application or 
+    Once a working console/terminal prototype is built, I plan on developing either a web application or
     desktop application that can be used instead to run the game.
 
 CardGame's Implementation
 
     Contents:
-     Templates: Generic classes which provide common functionality. Extended  by GameBundles/GameRules.py.
+     Generics: Generic classes which provide common functionality. Extended by GameBundles/GameRules.py.
         
-     GameBundles: Contains a GameBundle subdirectory containing Template extensions and a GameRules.py file.
+     GameBundles: Contains a GameBundle subdirectory containing /Generic/ extensions and a GameRules.py file.
         
      Controllers: Contains files which interact with a GameRules.py file and the user through the Menu class. 
-                      Recieves a list of Phases from file, the order in which to run them, and each Phase 
+                      Receives a list of Phases from file, the order in which to run them, and each Phase
                       provides a list of member functions. Controllers may be extended by a GameRules.py file.
         
      main.py: Handles GameBundle selection, as well as the creation of any Controllers necessary to run game.

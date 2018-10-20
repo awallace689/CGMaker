@@ -1,6 +1,6 @@
-from Templates.ABCRules import ABCRules, Phase
-from Templates.Player import Player
-from Templates.Menu import Menu
+from Generics.ABCRules import ABCRules, Phase
+from Generics.Player import Player
+from Generics.Menu import Menu
 
 
 class BlackjackRules(ABCRules):

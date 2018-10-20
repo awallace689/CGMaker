@@ -6,8 +6,8 @@
         functionality. Used by
 ====================================================================================================
 """
-from Templates.DeckWrapper import DeckWrapper
-from Templates.Card import Card, Suit, Rank
+from Generics.DeckWrapper import DeckWrapper
+from Generics.Card import Card, Suit, Rank
 from enum import Enum
 from random import shuffle as rshuffle
 

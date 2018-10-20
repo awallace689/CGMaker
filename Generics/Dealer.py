@@ -1,4 +1,4 @@
-from Templates.Player import Player
+from Generics.Player import Player
 
 
 class Dealer(Player):

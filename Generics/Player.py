@@ -1,4 +1,4 @@
-from Templates.Hand import Hand
+from Generics.Hand import Hand
 
 
 class Player:

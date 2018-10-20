@@ -2,13 +2,13 @@
 ====================================================================================================
 @Author: Adam Wallace
 @Date: 9/30/2018
-@About: A Templates class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
+@About: A Generics class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
         Wraps a deck, its discard pile ('discard_deck'), and several basic functions to be performed on one/both.
 @Note: Modular design and minimal method complexity allows class to serve as superclass for a variety
        of game decks.
 ====================================================================================================
 """
-from Templates.Card import *
+from Generics.Card import *
 from random import shuffle as rshuffle
 
 

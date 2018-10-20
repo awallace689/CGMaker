@@ -1,6 +1,6 @@
-from Templates.Hand import Hand
+from Generics.Hand import Hand
 from GameBundles.BlackjackBundle.BlackjackRules import *
-from Templates.Menu import Menu
+from Generics.Menu import Menu
 
 
 # def draw_two(d: BlackjackDeck):

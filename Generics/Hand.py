@@ -5,7 +5,7 @@
 @About: A Hand class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
 #====================================================================================================
 """
-from Templates.Card import Card
+from Generics.Card import Card
 
 
 class Hand:
