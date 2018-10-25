@@ -1,29 +1,25 @@
-from Generics.ABCRules import ABCRules, Phase
+from Generics.ABCs import RulesABC, PhaseABC
 from Generics.Players import Player
 from Generics.Menu import Menu
 
 
-class BlackjackRules(ABCRules):
+class BlackjackRules(RulesABC):
     def __init__(self):
-        pass
+        self.phase_dict = {"Betting Phase": BettingPhase}
 
     @property
     def phases(self):
-        phase_dict = {"Betting Phase": BettingPhase,
-                      "end": "func3, func4"}
-        return phase_dict
+        return self.phase_dict
 
 
-class BettingPhase(Phase):
+class BettingPhase(PhaseABC):
     def __init__(self):
         self._methods = [(self.bet, "Bet doc here.")]
 
     @property
     def methods(self):
+        """returns list of tuples "('function obj', 'info string')"""
         return self._methods
-
-    # returns list of tuples "('function obj', 'info string')"
-    _methods = []
 
     def bet(self, player: Player, amount):
         try:

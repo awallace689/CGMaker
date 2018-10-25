@@ -9,16 +9,16 @@ class Player:
         self._bankroll = bank
 
     @property
-    def bank(self):
+    def bankroll(self):
         return self._bankroll
 
-    @bank.setter
-    def bank(self, bank):
+    @bankroll.setter
+    def bankroll(self, bank):
         self._bankroll = bank
 
     def take_bank(self, amount):
-        assert amount <= self.bank
-        self.bank -= amount
+        assert amount <= self._bankroll
+        self._bankroll -= amount
         return amount
 
 

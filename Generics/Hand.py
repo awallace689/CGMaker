@@ -66,6 +66,3 @@ class Hand:
 
     def peek(self, index=0):
         return self.cards[index]
-
-
-

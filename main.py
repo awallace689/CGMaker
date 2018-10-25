@@ -22,4 +22,5 @@ from Generics.Menu import Menu
 
 m = Menu()
 b = BettingPhase()
+m.clear()
 inp = get_input(b.methods, m)
