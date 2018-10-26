@@ -100,8 +100,7 @@ class DeckWrapper:
         self._discard = self._discard[1:]
         return drawn
 
-    def add_deck(self, card, index):
-        assert issubclass(card, Card)
+    def add_deck(self, card: Card, index):
         self.deck.insert(index, card)
 
     def add_discard(self, *args):

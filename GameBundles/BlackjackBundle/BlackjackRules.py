@@ -1,5 +1,5 @@
 from Generics.ABCs import RulesABC, PhaseABC
-from Generics.Players import Player
+from GameBundles.BlackjackBundle.BlackjackGenericsMods import BlackjackPlayer
 from Generics.Menu import Menu
 
 
@@ -18,10 +18,10 @@ class BettingPhase(PhaseABC):
 
     @property
     def methods(self):
-        """returns list of tuples "('function obj', 'info string')"""
+        """returns list of tuples "('function obj', 'menu string')"""
         return self._methods
 
-    def bet(self, player: Player, amount):
+    def bet(self, player: BlackjackPlayer, amount):
         try:
             player.take_bank(amount)
 

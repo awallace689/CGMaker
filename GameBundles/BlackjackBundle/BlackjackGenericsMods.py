@@ -8,6 +8,7 @@
 """
 from Generics.DeckWrapper import DeckWrapper
 from Generics.Card import Card, Suit, Rank
+from Generics.Player import Player
 from enum import Enum
 from random import shuffle as rshuffle
 
@@ -60,22 +61,34 @@ class BlackjackCard(Card):
     """self._rank is object type Rank, self.rank returns object type BlackjackRank"""
     def __init__(self, rank=None, suit=None):
         super().__init__()
-
-        if rank is None and suit is None:
-            self._rank = rank
-            self._suit = suit
-
-        else:
-            assert isinstance(rank, Rank)
-            assert isinstance(suit, Suit)
-            self._rank = rank
-            self._suit = suit
+        self._rank = rank
+        self._suit = suit
 
     @property
     def rank(self):
         return BlackjackRank[self._rank.name]
 
-    @rank.setter
-    def rank(self, r):
-        assert type(r) is type(Rank)
-        self._rank = r
+
+class BlackjackPlayer(Player):
+    def __init__(self, start_bank):
+        super().__init__()
+        self._bankroll = start_bank
+
+    @property
+    def bankroll(self):
+        return self._bankroll
+
+    @bankroll.setter
+    def bankroll(self, bank):
+        self._bankroll = bank
+
+    def take_bank(self, amount):
+        if amount <= self._bankroll:
+            raise BankrollEmptyError
+        self._bankroll -= amount
+        return amount
+
+
+class BankrollEmptyError(Exception):
+    def __init__(self):
+        pass
