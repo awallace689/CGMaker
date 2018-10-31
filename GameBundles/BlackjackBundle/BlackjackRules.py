@@ -14,22 +14,25 @@ class BlackjackRules(RulesABC):
 
 class BettingPhase(PhaseABC):
     def __init__(self):
-        self._methods = [(self.bet, "Bet doc here.")]
+        self._methods = [(self.get_bet, "Bet doc here.")]
 
     @property
     def methods(self):
         """returns list of tuples "('function obj', 'menu string')"""
         return self._methods
 
-    def bet(self, player: BlackjackPlayer, amount):
-        try:
-            player.take_bank(amount)
+    @staticmethod
+    def take_bank(player: BlackjackPlayer, amount):
+        player.bankroll -= amount
+        return amount
 
+    @classmethod
+    def get_bet(cls, player: BlackjackPlayer, amount):
+        try:
+            return cls.take_bank(player, amount)
         except AssertionError:
             print("*Cannot bet more than exists in bankroll.*")
-            return self.bet(player, amount)
-
-        return amount
+            return cls.get_bet(player, amount)
 
 
 def get_input(up_list=None, menu=None):

@@ -21,7 +21,7 @@ class BlackjackDeck(DeckWrapper):
         if other is not None:
             assert isinstance(other, BlackjackDeck)
             self._deck = other.deck
-            self._discard = other.discard_deck
+            self._played = other.played
 
         else:
             self._deck = BlackjackDeck.new_deck(shuffle=True)
@@ -73,6 +73,7 @@ class BlackjackPlayer(Player):
     def __init__(self, start_bank):
         super().__init__()
         self._bankroll = start_bank
+        self._playing = True
 
     @property
     def bankroll(self):
@@ -82,13 +83,25 @@ class BlackjackPlayer(Player):
     def bankroll(self, bank):
         self._bankroll = bank
 
-    def take_bank(self, amount):
-        if amount <= self._bankroll:
-            raise BankrollEmptyError
-        self._bankroll -= amount
-        return amount
+    @property
+    def is_playing(self):
+        if self._playing is False:
+            return False
+        elif self._bankroll <= 0:
+            return False
+        else:
+            return True
+
+    @is_playing.setter
+    def is_playing(self, b: bool):
+        self._playing = b
 
 
-class BankrollEmptyError(Exception):
+class NotPlayingError(Exception):
+    def __init__(self):
+        pass
+
+
+class NegativeBankroll(Exception):
     def __init__(self):
         pass

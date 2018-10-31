@@ -3,7 +3,7 @@
 @Author: Adam Wallace
 @Date: 9/30/2018
 @About: A Generics class for use with "Card.py," made to be usable with any '52-card deck' game implementation.
-        Wraps a deck, its discard pile ('discard_deck'), and several basic functions to be performed on one/both.
+        Wraps a deck, its played pile ('played_deck'), and several basic functions to be performed on one/both.
 @Note: Modular design and minimal method complexity allows class to serve as superclass for a variety
        of game decks.
 ====================================================================================================
@@ -19,11 +19,11 @@ class DeckWrapper:
         if other is not None:
             assert isinstance(other, DeckWrapper)
             self._deck = other.deck
-            self._discard = other.discard_deck
+            self._played = other.played
 
         else:
             self._deck = DeckWrapper.new_deck()
-            self._discard = []
+            self._played = []
 
     @property
     def deck(self):
@@ -31,33 +31,31 @@ class DeckWrapper:
 
     @deck.setter
     def deck(self, d):
-        assert isinstance(d, DeckWrapper)
         self._deck = d.deck
 
     @property
-    def discard_deck(self):
-        return self._discard
+    def played(self):
+        return self._played
 
-    @discard_deck.setter
-    def discard_deck(self, d):
-        assert isinstance(d, DeckWrapper)
-        self._discard = d.discard_deck
+    @played.setter
+    def played(self, d):
+        self._played = d.played
 
     @property
     def deck_size(self):
         return self.deck.__len__()
 
     @property
-    def discard_size(self):
-        return self.discard_deck.__len__()
+    def played_size(self):
+        return self.played.__len__()
 
     @property
     def is_deck_empty(self):
         return self._deck.__len__() == 0
 
     @property
-    def is_discard_empty(self):
-        return self._discard.__len__() == 0
+    def is_played_empty(self):
+        return self._played.__len__() == 0
 
     @staticmethod
     def new_deck(shuffle=True):
@@ -80,7 +78,6 @@ class DeckWrapper:
     @staticmethod
     def format(deck: list):
         """Creates and returns list of 2-tuples, formatted (Rank, Suit), one tuple per card"""
-        assert isinstance(deck, list)
         p_deck = []
         for card in deck:
             p_deck.append((card.rank.name, card.suit.name))
@@ -95,22 +92,22 @@ class DeckWrapper:
         self._deck = self._deck[1:]
         return drawn
 
-    def draw_discard(self):
-        drawn = self._discard[0]
-        self._discard = self._discard[1:]
+    def draw_played(self):
+        drawn = self._played[0]
+        self._played = self._played[1:]
         return drawn
 
     def add_deck(self, card: Card, index):
         self.deck.insert(index, card)
 
-    def add_discard(self, *args):
+    def add_played(self, *args):
         for card in args:
             assert isinstance(card, Card)
-            self.discard_deck.append(card)
+            self.played.append(card)
 
     def reset(self, shuffle=True):
         if shuffle:
             self._deck = DeckWrapper.new_deck()
         else:
             self._deck = DeckWrapper.new_deck(shuffle=False)
-        self._discard = []
+        self._played = []

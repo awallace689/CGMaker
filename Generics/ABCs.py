@@ -19,6 +19,7 @@ class RulesABC(ABC):
         pass
 
     @property
+    @abstractmethod
     def allowed_actions(self):
         pass
 
@@ -32,17 +33,25 @@ class PhaseABC(ABC):
 
 
 class GameManagerABC(ABC):
+    def __init__(self, phases=None, players=list()):
+        self._phases = phases
+        self._players = players
+
     @property
-    @abstractmethod
     def phases(self):
-        pass
+        return self._phases
 
     @property
     def players(self):
+        return self._players
+
+    @property
+    def playing(self):
         pass
 
-    def run_game(self):
-        pass
+    @staticmethod
+    def exit_to_menu():
+        exit()
 
     def end_game(self):
-        pass
+        self.exit_to_menu()
