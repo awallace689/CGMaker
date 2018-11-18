@@ -8,6 +8,11 @@
 from abc import ABC, abstractmethod
 
 
+class ExitCondition(Exception):
+    def __init__(self):
+        pass
+
+
 class RulesABC(ABC):
     @property
     @abstractmethod
@@ -18,18 +23,15 @@ class RulesABC(ABC):
         """
         pass
 
-    @property
-    @abstractmethod
-    def allowed_actions(self):
-        pass
-
-
 class PhaseABC(ABC):
     @property
     @abstractmethod
     def methods(self):
-        """Returns array of tuples '('method obj', 'info string')'"""
+        """Returns array of tuples '("name", Function object, "tooltip")'"""
         pass
+
+    def exit(self):
+        raise ExitCondition
 
 
 class GameManagerABC(ABC):
@@ -46,12 +48,13 @@ class GameManagerABC(ABC):
         return self._players
 
     @property
+    @abstractmethod
     def playing(self):
         pass
 
     @staticmethod
     def exit_to_menu():
-        exit()
+        raise ExitCondition()
 
     def end_game(self):
         self.exit_to_menu()
