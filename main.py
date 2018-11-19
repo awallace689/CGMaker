@@ -35,6 +35,7 @@ if __name__ == "__main__":
             from Controllers.BlackjackGameManager import BlackjackManager as GM
 
         if choice is 2:
+            menu.clear()
             exit(0)
 
         game_manager = GM()
