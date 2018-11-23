@@ -68,7 +68,6 @@ class DeckWrapper:
 
         if shuffle:
             rshuffle(deck)  # random.shuffle
-
         return deck
 
     @staticmethod

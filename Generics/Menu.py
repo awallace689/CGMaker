@@ -3,9 +3,10 @@ from os import name as os_name
 
 
 class Menu:
-    def __init__(self):
+    def __init__(self, header=""):
         self._os = os_name
         self._menu = "_UNASSIGNED_\n"
+        self._header = header
 
     @property
     def get_str(self):
@@ -30,7 +31,7 @@ class Menu:
     def generate(self, up_list):
         self._menu = ""
         self._menu = self.update(up_list)
-        return self._menu
+        return self._header + self._menu
 
     def clear(self):
         if self._os == "posix":

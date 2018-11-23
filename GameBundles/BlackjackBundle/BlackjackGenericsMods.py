@@ -8,7 +8,7 @@
 """
 from Generics.DeckWrapper import DeckWrapper
 from Generics.Card import Card, Suit, Rank
-from Generics.Player import Player
+from Generics.Player import Player, NPC, User
 from enum import Enum
 from random import shuffle as rshuffle
 
@@ -69,8 +69,21 @@ class BlackjackCard(Card):
         return BlackjackRank[self._rank.name]
 
 
-class BlackjackPlayer(Player):
-    def __init__(self, start_bank):
+class BlackjackUser(User):
+    bankroll = None
+    playing = None
+
+    def __init__(self, start_bank=300):
+        super().__init__()
+        self.bankroll = start_bank
+        self.playing = True
+
+
+class BlackjackNPC(NPC):
+    bankroll = None
+    playing = None
+
+    def __init__(self, start_bank=300):
         super().__init__()
         self._bankroll = start_bank
         self._playing = True

@@ -1,26 +1,17 @@
 from Generics.ABCs import RulesABC, PhaseABC, abstractmethod, EndTurn
-from GameBundles.BlackjackBundle.BlackjackGenericsMods import BlackjackPlayer, NegativeBankroll, NotPlayingError
+from Generics.Player import Player
+from GameBundles.BlackjackBundle.BlackjackGenericsMods import BlackjackNPC, BlackjackUser
 from Generics.Menu import Menu
 
-
-def is_playing(func):
-    def wrapper(self, player: BlackjackPlayer, *args):
-        if player.is_playing:
-            return func(self, player, *args)
-        else:
-            raise NotPlayingError
-
-    return wrapper
-
-
-def check_amount(func):
-    def wrapper(self, player: BlackjackPlayer, amount, *args):
-        if player.bankroll - amount >= 0:
-            return func(self, player, amount, *args)
-        else:
-            raise NegativeBankroll
-
-    return wrapper
+#
+# def is_playing(func):
+#     def wrapper(self, player: BlackjackPlayer, *args):
+#         if player.is_playing:
+#             return func(self, player, *args)
+#
+#         else:
+#             raise NotPlayingError
+#     return wrapper
 
 
 class BlackjackPhase(PhaseABC):
@@ -43,7 +34,7 @@ class BlackjackPhase(PhaseABC):
         """
         return self._methods
 
-    def end_turn(self):
+    def end_turn(self, *args):
         raise EndTurn
 
 
@@ -58,24 +49,27 @@ class BettingPhase(BlackjackPhase):
         pass
 
     def run_user(self, player):
-        pass
+        menu = Menu(header="[Betting Phase]\n")
+        index = get_input(up_list=self._methods, menu=menu, player=player) - 1
+        menu.clear()
+        self._methods[index][1](player, menu)
 
     @staticmethod
-    def take_bank(player: BlackjackPlayer, amount):
+    def take_bank(player, amount):
         player.bankroll -= amount
         return amount
 
+    def bet(self):
+        pass
+
     @classmethod
-    def get_bet(cls, player: BlackjackPlayer, amount):
-        try:
-            return cls.take_bank(player, amount)
-        except AssertionError:
-            print("*Cannot bet more than exists in bankroll.*")
-            return cls.get_bet(player, amount)
+    def get_bet(cls, player, menu):
+        amount = get_input(amount=True, player=player, menu=menu)
+        return cls.take_bank(player, amount)
 
 
 class BlackjackRules(RulesABC):
-    phase_dict = {"Betting Phase": BettingPhase()}
+    phase_list = [("Betting Phase", BettingPhase())]
 
     def __init__(self):
         super().__init__()
@@ -88,7 +82,7 @@ def get_input(up_list=None, menu=None, amount=False, player=None, query=False, q
     :param amount: Bool, amount=False: Requesting Menu selection
                          amount=True : Requesting any positive integer
     :param player: Player object, required for displaying max amount when amount=True
-    :param query: Bool, query=True: poses and evaluates y/n
+    :param query: Bool, query=True: poses query and evaluates y/n response
     :param query_string: String, if query=True, queryString will display in addition to (y/n) tooltip
     :return: int, amount=False: index of selected option (function) in BlackjackPhase.methods
                   amount=True : any positive integer <= player.bankroll
@@ -109,9 +103,10 @@ def get_input(up_list=None, menu=None, amount=False, player=None, query=False, q
             else:
                 uin = input(f"Enter amount:\n> ")
                 assert int(uin) > 0
+
         else:
             if query:
-                uin = input(query_string + "(y/n)\n> ")
+                uin = input(query_string + " (y/n)\n> ")
                 if uin.lower() == 'y':
                     return True
 
@@ -135,11 +130,13 @@ def get_input(up_list=None, menu=None, amount=False, player=None, query=False, q
         return int(uin)
 
     except (TypeError, ValueError):
-        menu.clear()
+        if menu:
+            menu.clear()
         print("*Invalid input. Try again...*")
         return get_input(up_list, menu, amount, player, query, query_string)
 
     except AssertionError:
-        menu.clear()
+        if menu:
+            menu.clear()
         print("*Selection out of range. Try again...*")
         return get_input(up_list, menu, amount, player, query, query_string)

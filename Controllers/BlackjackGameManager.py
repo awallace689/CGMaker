@@ -1,10 +1,14 @@
 from Generics.ABCs import GameManagerABC, ExitCondition, EndTurn
-from GameBundles.BlackjackBundle.BlackjackGenericsMods import BlackjackPlayer
+from GameBundles.BlackjackBundle.BlackjackGenericsMods import BlackjackNPC, BlackjackUser
 from GameBundles.BlackjackBundle.BlackjackRules import BlackjackRules, get_input
 
 
-def make_player():
-    return BlackjackPlayer(300)
+def make_user(bankroll=300):
+    return BlackjackUser(bankroll)
+
+
+def make_npc(bankroll=300):
+    return BlackjackNPC(bankroll)
 
 
 def catch_exit(func):
@@ -13,7 +17,7 @@ def catch_exit(func):
             return func(*args)
 
         except ExitCondition:
-            if get_input(query=True, query_string="Are you sure?"):
+            if get_input(query=True, query_string="Are you sure you want to exit?"):
                 raise ExitCondition
     return wrapper
 
@@ -24,23 +28,33 @@ def catch_end_turn(func):
             return func(*args)
 
         except EndTurn:
-            pass
+            if get_input(query=True, query_string="Are you sure you want to end your turn?"):
+                raise EndTurn
     return wrapper
 
 
 class BlackjackManager(GameManagerABC):
     def __init__(self, phases=None, players=list()):
         super().__init__(phases, players)
-        self._phases = BlackjackRules.phase_dict
+        self._phases = BlackjackRules.phase_list
 
     @property
     def playing(self):
         return [self._players[i] for i in range(len(self._players)) if (self._players[i].bankroll > 0)]
 
-    def add_players(self, count):
+    def add_players(self, count, type=None, bankroll=300):
         assert(len(self._players) + count < 8)
         assert(count > 0)
-        self._players += [make_player() for _ in range(count)]
+
+        if type.lower() == "npc":
+            self._players += [make_npc(bankroll=bankroll) for _ in range(count)]
+
+        elif type.lower() == "user":
+            self._players += [make_user(bankroll=bankroll) for _ in range(count)]
+
+    def remove_player(self, index):
+        assert self._players[index]
+        self._players.pop(index=index)
 
     def run_phases(self):
             self.run_on_playing(self.playing)

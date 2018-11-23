@@ -51,7 +51,7 @@ class PhaseABC(ABC):
     def run_npc(self, player):
         pass
 
-    def exit(self):
+    def exit(self, *args):
         raise ExitCondition
 
 

@@ -1,8 +1,8 @@
 from Generics.Menu import Menu
-from Generics.ABCs import ExitCondition
+from Generics.ABCs import ExitCondition, EndTurn
 
 
-def get_selection(menu: Menu):
+def get_selection(_menu: Menu):
     game_list = [("Blackjack", None, "Play Blackjack with up to 7 other NPCs!"),
                  ("Exit", None, "Exit program.")]
     string = '*' * 30 + '\n' +\
@@ -12,7 +12,7 @@ def get_selection(menu: Menu):
              '*' * 30 + '\n' +\
              "Author: Adam Wallace" + '\n'
     print(string)
-    uin = input(menu.generate(game_list))
+    uin = input(_menu.generate(game_list))
 
     assert int(uin) <= len(game_list)
     assert int(uin) > 0
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
         except (AssertionError, TypeError, ValueError):
             menu.clear()
-            choice = get_selection(menu)
+            continue
 
         if choice is 1:
             from Controllers.BlackjackGameManager import BlackjackManager as GameManager
@@ -40,9 +40,14 @@ if __name__ == "__main__":
 
         game_manager = GameManager()
         try:
-            game_manager.add_players(3)
-            game_manager.players[0].bankroll = 0
-            game_manager.run_on_playing()
+            game_manager.add_players(1, type="npc", bankroll=0)
+            game_manager.add_players(1, type="user")
+            while True:
+                try:
+                    game_manager.run_on_playing()
+
+                except EndTurn:
+                    continue
 
         except ExitCondition:
             del GameManager
