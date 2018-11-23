@@ -13,7 +13,7 @@ class Menu:
 
     def update(self, up_list):
         print_string = ""
-        for i in range(up_list.__len__()):
+        for i in range(len(up_list)):
             print_string += f"> {i + 1}) {up_list[i][0]}: {up_list[i][2]}\n"
 
         if print_string != "":

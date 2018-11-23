@@ -1,6 +1,6 @@
-from Generics.ABCs import GameManagerABC, ExitCondition
+from Generics.ABCs import GameManagerABC, ExitCondition, EndTurn
 from GameBundles.BlackjackBundle.BlackjackGenericsMods import BlackjackPlayer
-from GameBundles.BlackjackBundle.BlackjackRules import BettingPhase
+from GameBundles.BlackjackBundle.BlackjackRules import BlackjackRules, get_input
 
 
 def make_player():
@@ -8,26 +8,37 @@ def make_player():
 
 
 def catch_exit(func):
-    def wrapper(self, *args):
+    def wrapper(*args):
         try:
-            f = func(self, args)
-            return f
+            return func(*args)
 
         except ExitCondition:
-            self.exit_to_menu()
+            if get_input(query=True, query_string="Are you sure?"):
+                raise ExitCondition
+    return wrapper
+
+
+def catch_end_turn(func):
+    def wrapper(*args):
+        try:
+            return func(*args)
+
+        except EndTurn:
+            pass
     return wrapper
 
 
 class BlackjackManager(GameManagerABC):
     def __init__(self, phases=None, players=list()):
         super().__init__(phases, players)
+        self._phases = BlackjackRules.phase_dict
 
     @property
     def playing(self):
-        return [self.players[i] for i in range(len(self.players)) if (self.players[i].bankroll > 0)]
+        return [self._players[i] for i in range(len(self._players)) if (self._players[i].bankroll > 0)]
 
     def add_players(self, count):
-        assert(self._players.__len__() + count < 8)
+        assert(len(self._players) + count < 8)
         assert(count > 0)
         self._players += [make_player() for _ in range(count)]
 
@@ -35,12 +46,11 @@ class BlackjackManager(GameManagerABC):
             self.run_on_playing(self.playing)
 
     @catch_exit
-    def run_on_playing(self, playing: list):
-        for phase in self.phases:
-            for player in playing:
-                phase.run(player)
+    def run_on_playing(self):
+        for (_, phase) in self._phases:
+            for player in self.playing:
+                self.run_phase(phase, player)
 
-
-GM = BlackjackManager(BettingPhase)
-GM.add_players(3)
-GM.playing[1].bankroll = 0
+    @catch_end_turn
+    def run_phase(self, phase, player):
+        phase.run_self(player)

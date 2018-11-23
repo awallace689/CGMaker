@@ -43,19 +43,19 @@ class DeckWrapper:
 
     @property
     def deck_size(self):
-        return self.deck.__len__()
+        return len(self._deck)
 
     @property
     def played_size(self):
-        return self.played.__len__()
+        return len(self._played)
 
     @property
     def is_deck_empty(self):
-        return self._deck.__len__() == 0
+        return len(self._deck) == 0
 
     @property
     def is_played_empty(self):
-        return self._played.__len__() == 0
+        return len(self._played) == 0
 
     @staticmethod
     def new_deck(shuffle=True):
@@ -81,7 +81,7 @@ class DeckWrapper:
         p_deck = []
         for card in deck:
             p_deck.append((card.rank.name, card.suit.name))
-        return ("Length: %d \n" % deck.__len__()) + str(p_deck)
+        return ("Length: %d \n" % len(deck)) + str(p_deck)
 
 # ===================================================================================================
 #                                      **DECK-ALTERING METHODS**

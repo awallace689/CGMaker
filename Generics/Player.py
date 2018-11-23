@@ -6,3 +6,13 @@ class Player:
 
     def __init__(self):
         pass
+
+
+class User(Player):
+    def __init__(self):
+        super().__init__()
+
+
+class NPC(Player):
+    def __init__(self):
+        super().__init__()

@@ -22,7 +22,7 @@ class Hand:
             string = ", " + string + str(card)
 
         string = string[2:]
-        return ("Length: %d\n" % self._cards.__len__()) + string
+        return ("Length: %d\n" % len(self._cards)) + string
 
     @property
     def cards(self):
@@ -34,11 +34,11 @@ class Hand:
 
     @property
     def size(self):
-        return self._cards.__len__()
+        return len(self._cards)
 
     @property
     def is_empty(self):
-        return self._cards.__len__() == 0
+        return len(self._cards) == 0
 
     def add(self, card, index=None):
         assert isinstance(card, Card)

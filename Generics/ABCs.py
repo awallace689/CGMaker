@@ -6,6 +6,7 @@
 ====================================================================================================
 """
 from abc import ABC, abstractmethod
+from Generics.Player import User, NPC
 
 
 class ExitCondition(Exception):
@@ -13,21 +14,41 @@ class ExitCondition(Exception):
         pass
 
 
+class EndTurn(Exception):
+    def __init__(self):
+        pass
+
+
 class RulesABC(ABC):
+
     @property
-    @abstractmethod
     def phases(self):
         """
-        Returns dict of Phase objects:
-                {"Name String": Phase obj}
+        :returns: {"Name String": Phase obj}
         """
-        pass
+        raise NotImplemented
+
 
 class PhaseABC(ABC):
     @property
     @abstractmethod
     def methods(self):
         """Returns array of tuples '("name", Function object, "tooltip")'"""
+        pass
+
+    def run_self(self, player):
+        if isinstance(player, User):
+            self.run_user(player)
+
+        if isinstance(player, NPC):
+            self.run_npc(player)
+
+    @abstractmethod
+    def run_user(self, player):
+        pass
+
+    @abstractmethod
+    def run_npc(self, player):
         pass
 
     def exit(self):
@@ -43,6 +64,13 @@ class GameManagerABC(ABC):
     def phases(self):
         return self._phases
 
+    @phases.setter
+    def phases(self, phases):
+        """
+        :param phases: takes output from BlackjackRules.phases
+        """
+        self._phases = phases
+
     @property
     def players(self):
         return self._players
@@ -51,10 +79,3 @@ class GameManagerABC(ABC):
     @abstractmethod
     def playing(self):
         pass
-
-    @staticmethod
-    def exit_to_menu():
-        raise ExitCondition()
-
-    def end_game(self):
-        self.exit_to_menu()

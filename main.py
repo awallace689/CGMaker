@@ -32,17 +32,19 @@ if __name__ == "__main__":
             choice = get_selection(menu)
 
         if choice is 1:
-            from Controllers.BlackjackGameManager import BlackjackManager as GM
+            from Controllers.BlackjackGameManager import BlackjackManager as GameManager
 
         if choice is 2:
             menu.clear()
             exit(0)
 
-        game_manager = GM()
+        game_manager = GameManager()
         try:
-            game_manager.run_phases()
+            game_manager.add_players(3)
+            game_manager.players[0].bankroll = 0
+            game_manager.run_on_playing()
 
         except ExitCondition:
-            del GM
+            del GameManager
             del game_manager
             continue
