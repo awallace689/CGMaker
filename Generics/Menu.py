@@ -1,4 +1,4 @@
-from os import system as sys
+from os import system
 from os import name as os_name
 
 
@@ -35,6 +35,24 @@ class Menu:
 
     def clear(self):
         if self._os == "posix":
-            sys('clear')
+            system('clear')
         elif self._os == "nt":
-            sys('cls')
+            system('cls')
+
+
+class Frame:
+    def __init__(self):
+        self._header = None
+        self._content = None
+
+
+class AmountFrame(Frame):
+    def __init__(self):
+        super().__init__()
+        self._prompt = None
+        self._options = None
+
+
+class QueryFrame(Frame):
+    def __init__(self):
+        super().__init__()

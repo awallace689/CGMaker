@@ -49,7 +49,10 @@ class BettingPhase(BlackjackPhase):
         pass
 
     def run_user(self, player):
+        initial_bank = player.bankroll
         menu = Menu(header="[Betting Phase]\n")
+        menu.clear()
+
         index = get_input(up_list=self._methods, menu=menu, player=player) - 1
         menu.clear()
         self._methods[index][1](player, menu)
@@ -84,11 +87,11 @@ def get_input(up_list=None, menu=None, amount=False, player=None, query=False, q
     :param player: Player object, required for displaying max amount when amount=True
     :param query: Bool, query=True: poses query and evaluates y/n response
     :param query_string: String, if query=True, queryString will display in addition to (y/n) tooltip
-    :return: int, amount=False: index of selected option (function) in BlackjackPhase.methods
-                  amount=True : any positive integer <= player.bankroll
+    :return: amount=False: int, index of selected option (function) in BlackjackPhase.methods
+             amount=True : int, any positive integer <= player.bankroll
 
-                  query=False: see above
-                  query=True : Bool, corresponds to response of "y" or "n", amount cannot also be True
+             query=False: int, see above
+             query=True : Bool, corresponds to response of "y" or "n", amount cannot also be True
     """
     try:
         if amount:
@@ -130,13 +133,11 @@ def get_input(up_list=None, menu=None, amount=False, player=None, query=False, q
         return int(uin)
 
     except (TypeError, ValueError):
-        if menu:
-            menu.clear()
+        Menu.clear(Menu())
         print("*Invalid input. Try again...*")
         return get_input(up_list, menu, amount, player, query, query_string)
 
     except AssertionError:
-        if menu:
-            menu.clear()
+        Menu.clear(Menu())
         print("*Selection out of range. Try again...*")
         return get_input(up_list, menu, amount, player, query, query_string)

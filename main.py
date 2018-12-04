@@ -1,5 +1,6 @@
 from Generics.Menu import Menu
 from Generics.ABCs import ExitCondition, EndTurn
+from sys import modules
 
 
 def get_selection(_menu: Menu):
@@ -40,16 +41,16 @@ if __name__ == "__main__":
 
         game_manager = GameManager()
         try:
-            game_manager.add_players(1, type="npc", bankroll=0)
-            game_manager.add_players(1, type="user")
-            while True:
-                try:
-                    game_manager.run_on_playing()
+            game_manager.add_players(1, player_type="npc", bankroll=0)
+            game_manager.add_players(1, player_type="user")
+            try:
+                game_manager.run_on_playing()
 
-                except EndTurn:
-                    continue
+            except EndTurn:
+                continue
 
         except ExitCondition:
-            del GameManager
-            del game_manager
+            if "BlackjackManager" in modules.keys():
+                del modules["BlackjackManager"]
+                del game_manager
             continue

@@ -42,26 +42,28 @@ class BlackjackManager(GameManagerABC):
     def playing(self):
         return [self._players[i] for i in range(len(self._players)) if (self._players[i].bankroll > 0)]
 
-    def add_players(self, count, type=None, bankroll=300):
+    def add_players(self, count, player_type=None, bankroll=300):
         assert(len(self._players) + count < 8)
         assert(count > 0)
 
-        if type.lower() == "npc":
+        if player_type.lower() == "npc":
             self._players += [make_npc(bankroll=bankroll) for _ in range(count)]
 
-        elif type.lower() == "user":
+        elif player_type.lower() == "user":
             self._players += [make_user(bankroll=bankroll) for _ in range(count)]
+
+        elif player_type is not None:
+            raise ValueError
 
     def remove_player(self, index):
         assert self._players[index]
         self._players.pop(index=index)
 
-    def run_phases(self):
-            self.run_on_playing(self.playing)
-
     @catch_exit
     def run_on_playing(self):
         for (_, phase) in self._phases:
+            if len(self.playing) is 0:
+                raise ExitCondition
             for player in self.playing:
                 self.run_phase(phase, player)
 
