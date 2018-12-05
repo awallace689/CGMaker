@@ -219,8 +219,8 @@ class _Menu:
 _Menu = _Menu()
 _Menu.frame_stack.append(ExitFrame())
 while True:
-    u_in = _Menu.display(get_input=True, check=lambda inp: True if ((inp.lower() == 'y') or (inp.lower() == 'n'))
-                                                                else False)
-    if u_in.lower() == 'y':
+    user_in = _Menu.display(get_input=True, check=lambda inp: True if ((inp.lower() == 'y') or (inp.lower() == 'n'))
+                                                                   else False)
+    if user_in.lower() == 'y':
         _Menu.clear()
         exit(0)

@@ -52,9 +52,6 @@ class BettingPhase(BlackjackPhase):
         player.bankroll -= amount
         return amount
 
-    def bet(self):
-        pass
-
     @classmethod
     def get_bet(cls, player, menu):
         amount = get_input(amount=True, player=player, menu=menu)

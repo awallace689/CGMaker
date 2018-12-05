@@ -12,6 +12,11 @@ def make_npc(bankroll=300):
 
 
 def catch_exit(func):
+    """
+
+    :param func: function capable of throwing exception Generics.ABCs.ExitCondition
+    :return:
+    """
     def wrapper(*args):
         try:
             return func(*args)
@@ -34,15 +39,55 @@ def catch_end_turn(func):
 
 
 class BlackjackManager(GameManagerABC):
-    def __init__(self, phases=None, players=list()):
-        super().__init__(phases, players)
+    """Handles high-level game operations, running phases on list of valid players, adding/removing of players
+
+    (*)<- Inherited
+    :attributes:
+        playing: return list of BlackjackNPC and/or BlackjackPlayer in '_players' with bankroll > 0
+
+    :methods:
+        add_players(self, count: int, player_type=None, bankroll=300)
+            Add 'count' BlackjackPlayer or BlackjackNPC objects to '_players' with default bankroll 300.
+        remove_player(self, i: int)
+            Removes player from '_players' at index 'i'
+
+    :private:
+        :variables:
+            *_players: list of BlackjackUser and/or BlackjackNPC objects
+            *_phases : list of game phases to run on each (playing) player, from BlackjackRules.phase_list
+
+    """
+    def __init__(self, players=list()):
+        super().__init__()
         self._phases = BlackjackRules.phase_list
+        self._players = players
 
     @property
     def playing(self):
-        return [self._players[i] for i in range(len(self._players)) if (self._players[i].bankroll > 0)]
+        """Get list of players who "pass" the inner function 'check'
 
-    def add_players(self, count, player_type=None, bankroll=300):
+        :return: List of BlackjackPlayer and/or BlackjackNPC objects
+        """
+        def check(player):
+            if player.bankroll > 0:
+                return True
+            else:
+                return False
+
+        return [self._players[i] for i in range(len(self._players)) if check(self._players[i])]
+
+    def add_players(self, count, player_type, bankroll=300):
+        """Add 'count' BlackjackPlayer or BlackjackNPC objects to '_players' with default bankroll 300
+
+        :param count: Int, number of players of one type to add
+        :param player_type: None, no character created
+
+        :kwargs:
+            bankroll=default: sets bankroll of created players to 300
+                    =int    : sets bankroll of created players to 'int'
+
+        :return: None
+        """
         assert(len(self._players) + count < 8)
         assert(count > 0)
 
@@ -52,15 +97,25 @@ class BlackjackManager(GameManagerABC):
         elif player_type.lower() == "user":
             self._players += [make_user(bankroll=bankroll) for _ in range(count)]
 
-        elif player_type is not None:
+        else:
             raise ValueError
 
     def remove_player(self, i):
+        """Removes player from '_players' at index 'i'
+
+
+        :param i:
+        :return:
+        """
         assert self._players[i]
         self._players.pop(index=i)
 
     @catch_exit
     def run_on_playing(self):
+        """
+
+        :return:
+        """
         for (_, phase) in self._phases:
             if len(self.playing) is 0:
                 raise ExitCondition
