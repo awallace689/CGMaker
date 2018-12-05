@@ -12,10 +12,11 @@ def make_npc(bankroll=300):
 
 
 def catch_exit(func):
-    """
+    """Catches ExitCondition exception and displays exit-check frame
 
     :param func: function capable of throwing exception Generics.ABCs.ExitCondition
-    :return:
+    :return: None
+    :raise: Generics.ABCs.ExitCondition, if user confirms desire to exit
     """
     def wrapper(*args):
         try:
@@ -28,6 +29,12 @@ def catch_exit(func):
 
 
 def catch_end_turn(func):
+    """Catches EndTurn exception and displays end-check frame
+
+    :param func: function capable of throwing exception Generics.ABCs.EndTurn
+    :return: None
+    :raise: Generics.ABCs.EndTurn, if user confirms desire to exit
+    """
     def wrapper(*args):
         try:
             return func(*args)
@@ -103,7 +110,6 @@ class BlackjackManager(GameManagerABC):
     def remove_player(self, i):
         """Removes player from '_players' at index 'i'
 
-
         :param i:
         :return:
         """
@@ -112,9 +118,9 @@ class BlackjackManager(GameManagerABC):
 
     @catch_exit
     def run_on_playing(self):
-        """
+        """Calls 'run_phase' for each phase in order on each player, in order.
 
-        :return:
+        :return: None
         """
         for (_, phase) in self._phases:
             if len(self.playing) is 0:
@@ -124,4 +130,10 @@ class BlackjackManager(GameManagerABC):
 
     @catch_end_turn
     def run_phase(self, phase, player):
+        """Runs appropriate phase_run method based on player type.
+
+        :param phase: Phase object, to run with 'player'
+        :param player: Player object, player to run phase on
+        :return: None
+        """
         phase.run_self(player)

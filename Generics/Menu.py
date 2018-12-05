@@ -2,44 +2,6 @@ from os import system
 from os import name as os_name
 
 
-class Menu:
-    def __init__(self, header=""):
-        self._os = os_name
-        self._menu = "_UNASSIGNED_\n"
-        self._header = header
-
-    @property
-    def get_str(self):
-        return self._menu
-
-    def update(self, up_list):
-        print_string = ""
-        for i in range(len(up_list)):
-            print_string += f"> {i + 1}) {up_list[i][0]}: {up_list[i][2]}\n"
-
-        if print_string != "":
-            self._menu = print_string
-
-        else:
-            self._menu = "_EMPTY_\n"
-
-        if self._menu[-2] != '>':
-            self._menu += '> '
-
-        return self._menu
-
-    def generate(self, up_list):
-        self._menu = ""
-        self._menu = self.update(up_list)
-        return self._header + self._menu
-
-    def clear(self):
-        if self._os == "posix":
-            system('clear')
-
-        elif self._os == "nt":
-            system('cls')
-
 
 class Frame:
     """Formatted HEADER, PROMPT, and CONTENT field, meant for Menu class.
@@ -142,21 +104,28 @@ class ExitFrame(Frame):
 
     (*)<- Inherited
     :attributes:
-        *header: None or
-                 String, Displayed at top of frame as |FORMAT|
-        *prompt: None or
-                 String, Displayed below header
-        *content: None or
-                  String, Displayed below prompt
+        *header : String, Displayed at top of frame as |FORMAT|
+        *prompt : String, Displayed below header
+        *content: String, Displayed below prompt
     """
-    def __init__(self):
-        super().__init__()
-        self.header = "EXIT"
-        self.prompt = "Are you sure you want to exit?"
-        self.content = "'Y' or 'N'?"
+    def __init__(self, header="EXIT", prompt="Are you sure you want to exit?", content="'Y' or 'N'?"):
+        super().__init__(header=header, prompt=prompt, content=content)
 
 
-class _Menu:
+class EndFrame(Frame):
+    """Frame displaying turn-end menu prompting user input.
+
+    (*)<- Inherited
+    :attributes:
+        *header : String, Displayed at top of frame as |FORMAT|
+        *prompt : String, Displayed below header
+        *content: String, Displayed below prompt
+    """
+    def __init__(self, header="END TURN", prompt="Are you sure you want to end your turn?", content = "'Y' or 'N'?"):
+        super().__init__(header=header, prompt=prompt, content=content)
+
+
+class Menu:
     """Menu consisting of a stack of Frame objects, the top of which is displayed.
 
     :attributes:
@@ -168,7 +137,6 @@ class _Menu:
         clear()
             : calls system-specific console 'clear' command
     """
-
     frame_stack = []
 
     def __init__(self):
@@ -204,6 +172,36 @@ class _Menu:
             else:
                 return self.display(get_input=get_input, check=check, error=True)
 
+    def add_frame(self, frame_type="custom", *kwargs):
+        """Add a frame of 'frame_type' to the top of 'frame_stack'. Edit frame with *kwargs
+
+        :kwarg frame_type:
+            "custom" (default) : blank frame template
+            "exit"             : default exit-menu template
+            "end"              : default turn-end template
+
+        :*kwargs:
+            header : Default or
+                     String, Displayed at top of frame as |FORMAT|
+            prompt : Default or
+                     String, Displayed below header
+            content: Default or
+                     String, Displayed below prompt, formatted as enumerated list
+
+        :return: None
+        """
+        if frame_type.lower() == "custom":
+            self.frame_stack.append(Frame(*kwargs))
+
+        elif frame_type.lower() == "exit":
+            self.frame_stack.append(ExitFrame(*kwargs))
+
+        elif frame_type.lower() == "end":
+            self.frame_stack.append(EndFrame(*kwargs))
+
+        else:
+            raise ValueError
+
     def clear(self):
         """Calls system-specific console 'clear' command.
 
@@ -214,13 +212,3 @@ class _Menu:
 
         elif self._os == "nt":
             system('cls')
-
-
-_Menu = _Menu()
-_Menu.frame_stack.append(ExitFrame())
-while True:
-    user_in = _Menu.display(get_input=True, check=lambda inp: True if ((inp.lower() == 'y') or (inp.lower() == 'n'))
-                                                                   else False)
-    if user_in.lower() == 'y':
-        _Menu.clear()
-        exit(0)

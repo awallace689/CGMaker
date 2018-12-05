@@ -5,9 +5,14 @@ from Generics.Menu import Menu
 
 
 class BlackjackPhase(PhaseABC):
+    """
+    :attributes:
+        methods: return list of tuples containing player options [("name", Function object, "tooltip", Bool)]
+    """
     def __init__(self):
         super().__init__()
-        self._methods = None
+        self._methods = list()
+        self._options = [True if self._methods[i][3] else False for i in range(len(self._methods))]
 
     @abstractmethod
     def run_npc(self, player):
@@ -19,8 +24,10 @@ class BlackjackPhase(PhaseABC):
 
     @property
     def methods(self):
-        """
-        :return: [("name", Function obj, "tooltip")]
+        """Return list of tuples containing Phase methods and information about them
+
+        :return: [("name", Function obj, "tooltip", is_valid_option)]
+        :rtype:  [(String, Function object, String, Bool)]
         """
         return self._methods
 
@@ -31,21 +38,15 @@ class BlackjackPhase(PhaseABC):
 class BettingPhase(BlackjackPhase):
     def __init__(self):
         super().__init__()
-        self._methods = [("Bet", self.get_bet, "Place your bet."),
-                         ("End Turn", self.end_turn, "End your turn."),
-                         ("Exit", self.exit, "Return to main menu.")]
+        self._methods = [("Bet", self.get_bet, "Place your bet.", True),
+                         ("End Turn", self.end_turn, "End your turn.", True),
+                         ("Exit", self.exit, "Return to main menu."), True]
 
     def run_npc(self, player):
         pass
-
+    #                           TODO: next
     def run_user(self, player):
-        initial_bank = player.bankroll
-        menu = Menu(header="[Betting Phase]\n")
-        menu.clear()
-
-        index = get_input(up_list=self._methods, menu=menu, player=player) - 1
-        menu.clear()
-        self._methods[index][1](player, menu)
+        pass
 
     @staticmethod
     def take_bank(player, amount):
