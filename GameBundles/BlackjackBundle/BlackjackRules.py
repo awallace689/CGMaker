@@ -3,16 +3,6 @@ from Generics.Player import Player
 from GameBundles.BlackjackBundle.BlackjackGenericsMods import BlackjackNPC, BlackjackUser
 from Generics.Menu import Menu
 
-#
-# def is_playing(func):
-#     def wrapper(self, player: BlackjackPlayer, *args):
-#         if player.is_playing:
-#             return func(self, player, *args)
-#
-#         else:
-#             raise NotPlayingError
-#     return wrapper
-
 
 class BlackjackPhase(PhaseABC):
     def __init__(self):

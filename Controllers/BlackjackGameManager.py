@@ -55,9 +55,9 @@ class BlackjackManager(GameManagerABC):
         elif player_type is not None:
             raise ValueError
 
-    def remove_player(self, index):
-        assert self._players[index]
-        self._players.pop(index=index)
+    def remove_player(self, i):
+        assert self._players[i]
+        self._players.pop(index=i)
 
     @catch_exit
     def run_on_playing(self):
