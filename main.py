@@ -21,36 +21,7 @@ def get_selection(_menu: Menu):
 
 
 if __name__ == "__main__":
-    menu = Menu()
-
-    while True:
-        try:
-            menu.clear()
-            choice = get_selection(menu)
-
-        except (AssertionError, TypeError, ValueError):
-            menu.clear()
-            continue
-
-        if choice is 1:
-            from Controllers.BlackjackGameManager import BlackjackManager as GameManager
-
-        if choice is 2:
-            menu.clear()
-            exit(0)
-
-        game_manager = GameManager()
-        try:
-            game_manager.add_players(1, player_type="npc", bankroll=0)
-            game_manager.add_players(1, player_type="user")
-            try:
-                game_manager.run_on_playing()
-
-            except EndTurn:
-                continue
-
-        except ExitCondition:
-            if "BlackjackManager" in modules.keys():
-                del modules["BlackjackManager"]
-                del game_manager
-            continue
+    Menu = Menu()
+    _list = ["option 1", "option 2", "option 3"]
+    Menu.add_frame(frame_type="list", content=_list, header="OPTIONS", prompt="Select one of the following:")
+    print(Menu.display(get_input=True, check=lambda inp: True if check_digit(inp) and int(inp) > 1 else False))
