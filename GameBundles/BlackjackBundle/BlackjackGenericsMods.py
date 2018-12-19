@@ -69,38 +69,27 @@ class BlackjackCard(Card):
         return BlackjackRank[self._rank.name]
 
 
-class BlackjackUser(User):
+class BlackjackNPC(NPC):
     bankroll = None
-    playing = None
 
     def __init__(self, start_bank=300):
         super().__init__()
         self.bankroll = start_bank
-        self.playing = True
-
-
-class BlackjackNPC(NPC):
-    bankroll = None
-    playing = None
-
-    def __init__(self, start_bank=300):
-        super().__init__()
-        self._bankroll = start_bank
         self._playing = True
 
-    @property
-    def bankroll(self):
-        return self._bankroll
+    def take_bank(self, amount):
+        if self.bankroll >= amount:
+            self.bankroll -= amount
+            return amount
 
-    @bankroll.setter
-    def bankroll(self, bank):
-        self._bankroll = bank
+        else:
+            raise NegativeBankroll
 
     @property
     def is_playing(self):
         if self._playing is False:
             return False
-        elif self._bankroll <= 0:
+        elif self.bankroll <= 0:
             return False
         else:
             return True
@@ -110,9 +99,34 @@ class BlackjackNPC(NPC):
         self._playing = b
 
 
-class NotPlayingError(Exception):
-    def __init__(self):
-        pass
+class BlackjackUser(User):
+    bankroll = None
+
+    def __init__(self, start_bank=300):
+        super().__init__()
+        self.bankroll = start_bank
+        self._playing = True
+
+    def take_bank(self, amount):
+        if self.bankroll >= amount:
+            self.bankroll -= amount
+            return amount
+
+        else:
+            raise NegativeBankroll
+
+    @property
+    def is_playing(self):
+        if self._playing is False:
+            return False
+        elif self.bankroll <= 0:
+            return False
+        else:
+            return True
+
+    @is_playing.setter
+    def is_playing(self, b: bool):
+        self._playing = b
 
 
 class NegativeBankroll(Exception):

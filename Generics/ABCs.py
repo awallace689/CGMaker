@@ -7,6 +7,7 @@
 """
 from abc import ABC, abstractmethod
 from Generics.Player import User, NPC
+from Generics.Menu import Menu
 
 
 class ExitCondition(Exception):
@@ -20,7 +21,6 @@ class EndTurn(Exception):
 
 
 class RulesABC(ABC):
-
     @property
     def phases(self):
         """
@@ -30,10 +30,15 @@ class RulesABC(ABC):
 
 
 class PhaseABC(ABC):
+    menu = None
+
+    def __init__(self):
+        pass
+
     @property
     @abstractmethod
     def methods(self):
-        """Returns array of tuples '("name", Function object, "tooltip")'"""
+        """Returns array of tuples '("name", Function object, "tooltip", Valid Option: Bool)'"""
         pass
 
     def run_self(self, player):
@@ -56,6 +61,9 @@ class PhaseABC(ABC):
 
 
 class GameManagerABC(ABC):
+
+    menu = Menu()
+
     def __init__(self, phases=None, players=list()):
         self._phases = phases
         self._players = players
@@ -77,5 +85,5 @@ class GameManagerABC(ABC):
 
     @property
     @abstractmethod
-    def playing(self):
+    def run(self):
         pass

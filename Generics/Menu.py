@@ -58,11 +58,11 @@ class EnumFrame(Frame):
     (*)<- Inherited
     :attributes:
         *header: None or
-                 String, displayed at top of frame as |FORMAT|
+                 String, Displayed at top of frame as |FORMAT|
         *prompt: None or
-                 String, displayed below header
+                 String, Displayed below header
         *content: None or
-                  List of Strings, displayed below prompt
+                  List of Strings, Displayed below prompt
 
         format_options(option_list)
             format list of strings into a string containing a formatted enumerated list
@@ -96,7 +96,27 @@ class EnumFrame(Frame):
         return content_string
 
 
-class ExitFrame(Frame):
+class BoolFrame(Frame):
+    """Frame takes input of 'y'/'Y' or 'n'/'N' and returns corresponding Bool value when displayed
+       (inputs suggested to user automatically)
+
+    (*)<- Inherited
+    :attributes:
+        *header : String, Displayed at top of frame as |FORMAT|
+        *prompt : String, Displayed below header
+        *content: String, Displayed below prompt
+    """
+    def __init__(self, header=None, prompt=None, content=""):
+        if content:
+            content += "\n*Input [y/n]...*"
+
+        else:
+            content += "*Input [y/n]...*"
+
+        super().__init__(header=header, prompt=prompt, content=content)
+
+
+class ExitFrame(BoolFrame):
     """Frame displaying game exit menu prompting user input.
 
     (*)<- Inherited
@@ -105,11 +125,11 @@ class ExitFrame(Frame):
         *prompt : String, Displayed below header
         *content: String, Displayed below prompt
     """
-    def __init__(self, header="EXIT", prompt="Are you sure you want to exit?", content="'Y' or 'N'?"):
+    def __init__(self, header="EXIT", prompt="Are you sure you want to exit?", content=""):
         super().__init__(header=header, prompt=prompt, content=content)
 
 
-class EndFrame(Frame):
+class EndFrame(BoolFrame):
     """Frame displaying turn-end menu prompting user input.
 
     (*)<- Inherited
@@ -118,7 +138,7 @@ class EndFrame(Frame):
         *prompt : String, Displayed below header
         *content: String, Displayed below prompt
     """
-    def __init__(self, header="END TURN", prompt="Are you sure you want to end your turn?", content="'Y' or 'N'?"):
+    def __init__(self, header="END TURN", prompt="Are you sure you want to end your turn?", content=""):
         super().__init__(header=header, prompt=prompt, content=content)
 
 
@@ -132,9 +152,15 @@ class Menu:
         display(get_input=False, check=Function -> Bool, error=False)
             : print top-most frame, option to accept/check user input,
                                     automatically checks bounds when frame_type="list"
+
         add_frame(frame_type="custom")
             : add a frame of 'frame_type' to the top of 'Menu.frame_stack',
                                     add frame content with **kwargs 'header', 'prompt', and 'content'
+            **More kwargs in function documentation**
+
+        pop_frame()
+            : pop top frame off of frame_stack
+
         clear()
             : calls system-specific console 'clear' command
     """
@@ -143,8 +169,9 @@ class Menu:
     def __init__(self):
         self._os = os_name
 
-    def display(self, get_input=False, check=lambda inp, **kwargs: True, error=False):
+    def display(self, get_input=False, check=lambda inp: True, error=False):
         """Print top of 'frame_stack', use 'get_input' to receive user input and 'check' to validate input.
+           Some validation built-in for different frame types. Pops frame_stack after input received.
 
         :**kwargs:
             :param get_input: Bool, default: display 'frame_stack[-1].build()'
@@ -165,17 +192,34 @@ class Menu:
 
         if get_input:
             if error:
-                u_in = input("*Invalid input.*\n>")
+                u_in = input("*Invalid input.*\n>").strip()
             else:
-                u_in = input(">")
+                u_in = input(">").strip()
 
             if check(u_in):
+                # frame-specific input checks
                 if isinstance(self.frame_stack[-1], EnumFrame):
-                    if check_digit(u_in) and 0 < int(u_in) <= len(self.frame_stack[-1].build().split('\n')) - 1:
+                    if check_int(u_in) and 0 < int(u_in) <= len(self.frame_stack[-1].content.split('\n')):
+                        self.pop_frame()
                         return u_in
+
                     else:
                         return self.display(get_input=get_input, check=check, error=True)
+
+                elif isinstance(self.frame_stack[-1], BoolFrame):
+                    if u_in.lower() == 'y':
+                        self.pop_frame()
+                        return True
+
+                    elif u_in.lower() == 'n':
+                        self.pop_frame()
+                        return False
+
+                    else:
+                        return self.display(get_input=get_input, check=check, error=True)
+
                 else:
+                    self.pop_frame()
                     return u_in
 
             else:
@@ -186,6 +230,7 @@ class Menu:
 
         :param frame_type:
             "custom" (default) : blank frame template
+            "bool"             : Returns True for 'y'/'Y', False for 'n'/'N'
             "list"             : enumerated list, kwarg 'content' must be list of strings or unassigned
             "exit"             : default exit-menu template
             "end"              : default turn-end template
@@ -204,6 +249,9 @@ class Menu:
         if frame_type.lower() == "custom":
             self.frame_stack.append(Frame(**kwargs))
 
+        elif frame_type.lower() == "bool":
+            self.frame_stack.append(BoolFrame(**kwargs))
+
         elif frame_type.lower() == "list":
             self.frame_stack.append(EnumFrame(**kwargs))
 
@@ -215,6 +263,9 @@ class Menu:
 
         else:
             raise ValueError
+
+    def pop_frame(self):
+        self.frame_stack.pop()
 
     def clear(self):
         """Calls system-specific console 'clear' command.
@@ -228,23 +279,15 @@ class Menu:
             system('cls')
 
 
-def check_digit(_input: str):
-    """Check whether user input is digit
+def check_int(_input: str):
+    """Check whether input is digit (accepts negative ints)
 
     :param _input: str, reserved for display function
     :return: Bool
     """
-    _input = _input.strip()
-    if _input.startswith('-'):
-        if not _input[1:].isdigit():
-            return False
-    else:
-        if not _input.isdigit():
-            return False
-    return True
+    try:
+        int(_input)
+        return True
 
-
-Menu = Menu()
-_list = ["option 1", "option 2", "option 3"]
-Menu.add_frame(frame_type="list", content=_list, header="OPTIONS", prompt="Select one of the following:")
-print(Menu.display(get_input=True, check=lambda inp: True if check_digit(inp) and int(inp) > 1 else False))
+    except (TypeError, ValueError):
+        return False

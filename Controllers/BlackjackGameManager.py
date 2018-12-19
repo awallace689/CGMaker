@@ -1,6 +1,8 @@
-from Generics.ABCs import GameManagerABC, ExitCondition, EndTurn
+from Generics.ABCs import GameManagerABC, EndTurn, ExitCondition
+from Generics.Menu import Menu, check_int
 from GameBundles.BlackjackBundle.BlackjackGenericsMods import BlackjackNPC, BlackjackUser
-from GameBundles.BlackjackBundle.BlackjackRules import BlackjackRules, get_input
+from GameBundles.BlackjackBundle.BlackjackRules import BlackjackRules
+from random import shuffle
 
 
 def make_user(bankroll=300):
@@ -11,37 +13,18 @@ def make_npc(bankroll=300):
     return BlackjackNPC(bankroll)
 
 
-def catch_exit(func):
-    """Catches ExitCondition exception and displays exit-check frame
+def catch_end(func):
+    """Catches ExitCondition exception and safely ignores it to begin next loop iteration
 
     :param func: function capable of throwing exception Generics.ABCs.ExitCondition
-    :return: None
-    :raise: Generics.ABCs.ExitCondition, if user confirms desire to exit
-    """
-    def wrapper(*args):
-        try:
-            return func(*args)
-
-        except ExitCondition:
-            if get_input(query=True, query_string="Are you sure you want to exit?"):
-                raise ExitCondition
-    return wrapper
-
-
-def catch_end_turn(func):
-    """Catches EndTurn exception and displays end-check frame
-
-    :param func: function capable of throwing exception Generics.ABCs.EndTurn
-    :return: None
-    :raise: Generics.ABCs.EndTurn, if user confirms desire to exit
+    :return: Return-type of 'func'
     """
     def wrapper(*args):
         try:
             return func(*args)
 
         except EndTurn:
-            if get_input(query=True, query_string="Are you sure you want to end your turn?"):
-                raise EndTurn
+            pass
     return wrapper
 
 
@@ -50,6 +33,7 @@ class BlackjackManager(GameManagerABC):
 
     (*)<- Inherited
     :attributes:
+        *menu  : return Generics.Menu.Menu object, created in main.py, used throughout program
         playing: return list of BlackjackNPC and/or BlackjackPlayer in '_players' with bankroll > 0
 
     :methods:
@@ -64,10 +48,11 @@ class BlackjackManager(GameManagerABC):
             *_phases : list of game phases to run on each (playing) player, from BlackjackRules.phase_list
 
     """
-    def __init__(self, players=list()):
+    def __init__(self, _menu=Menu()):
         super().__init__()
-        self._phases = BlackjackRules.phase_list
-        self._players = players
+        self.menu = _menu
+        self._phases = [Phase(_menu=self.menu) for Phase in BlackjackRules.phase_list]
+        self._players = []
 
     @property
     def playing(self):
@@ -88,15 +73,17 @@ class BlackjackManager(GameManagerABC):
 
         :param count: Int, number of players of one type to add
         :param player_type: None, no character created
+                            "npc", BlackjackNPC
+                            "user", BlackjackUser
 
         :kwargs:
-            bankroll=default: sets bankroll of created players to 300
-                    =int    : sets bankroll of created players to 'int'
+            :param bankroll: =default: sets bankroll of created players to 300
+                             =int    : sets bankroll of created players to 'int'
 
         :return: None
         """
-        assert(len(self._players) + count < 8)
-        assert(count > 0)
+        assert(len(self._players) + count - 1 < 8)
+        assert(count >= 0)
 
         if player_type.lower() == "npc":
             self._players += [make_npc(bankroll=bankroll) for _ in range(count)]
@@ -110,30 +97,47 @@ class BlackjackManager(GameManagerABC):
     def remove_player(self, i):
         """Removes player from '_players' at index 'i'
 
-        :param i:
-        :return:
+        :param i: int, index
+        :return: None
         """
         assert self._players[i]
         self._players.pop(index=i)
 
-    @catch_exit
+    @catch_end
     def run_on_playing(self):
-        """Calls 'run_phase' for each phase in order on each player, in order.
+        """Calls the appropriate BlackjackRules.BlackjackPhase.run_X method on each player in self.playing
 
         :return: None
         """
-        for (_, phase) in self._phases:
+        for phase in self._phases:
             if len(self.playing) is 0:
                 raise ExitCondition
+
             for player in self.playing:
-                self.run_phase(phase, player)
+                if isinstance(player, BlackjackUser):
+                    phase.run_user(player)
 
-    @catch_end_turn
-    def run_phase(self, phase, player):
-        """Runs appropriate phase_run method based on player type.
+                elif isinstance(player, BlackjackNPC):
+                    phase.run_npc(player)
 
-        :param phase: Phase object, to run with 'player'
-        :param player: Player object, player to run phase on
+                else:
+                    raise ValueError
+
+    def run(self):
+        """Inherited method called in order to run Blackjack game.
+
         :return: None
         """
-        phase.run_self(player)
+        self._players = [BlackjackUser()]
+
+        self.menu.add_frame(frame_type="custom",
+                            header="SETUP",
+                            prompt="How many other NPC's? (Max: 8)",
+                            content="Enter number:")
+        number_npc = self.menu.display(get_input=True,
+                                       check=lambda inp: True if check_int(inp) and int(inp) < 8 else False)
+
+        self.add_players(int(number_npc), player_type="npc")
+        shuffle(self._players)
+
+        self.run_on_playing()
