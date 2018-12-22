@@ -63,7 +63,6 @@ class EnumFrame(Frame):
                  String, Displayed below header
         *content: None or
                   List of Strings, Displayed below prompt
-
         format_options(option_list)
             format list of strings into a string containing a formatted enumerated list
     """
@@ -178,9 +177,9 @@ class Menu:
                                     =True  : display 'frame_stack[-1].build()' and return input string
 
             :param check: default: input always passes 'check'
-                          Function(String) -> Bool=True : return input string
-                                                  =False: recursively re-display frame until input passes 'check'
-                          Note: EnumFrames have input automatically validated. Can still provide additional 'check'
+                          Function(arg: str) -> Bool=True : return input string
+                                                    =False: recursively re-display frame until input passes 'check'
+                          *Note: Bool, Enum, Exit, and End frames all automatically check for valid input.*
 
             :param error: Bool, prints invalid input message if True when getting input
 
@@ -200,30 +199,23 @@ class Menu:
                 # frame-specific input checks
                 if isinstance(self.frame_stack[-1], EnumFrame):
                     if check_int(u_in) and 0 < int(u_in) <= len(self.frame_stack[-1].content.split('\n')):
-                        self.pop_frame()
+                        self.frame_stack.pop()
                         return u_in
-
-                    else:
-                        return self.display(get_input=get_input, check=check, error=True)
 
                 elif isinstance(self.frame_stack[-1], BoolFrame):
                     if u_in.lower() == 'y':
-                        self.pop_frame()
+                        self.frame_stack.pop()
                         return True
 
                     elif u_in.lower() == 'n':
-                        self.pop_frame()
+                        self.frame_stack.pop()
                         return False
 
-                    else:
-                        return self.display(get_input=get_input, check=check, error=True)
-
                 else:
-                    self.pop_frame()
+                    self.frame_stack.pop()
                     return u_in
 
-            else:
-                return self.display(get_input=get_input, check=check, error=True)
+            return self.display(get_input=get_input, check=check, error=True)
 
     def add_frame(self, frame_type="custom", **kwargs):
         """Add a frame of 'frame_type' to the top of 'frame_stack'. Edit frame fields with **kwargs
@@ -242,7 +234,7 @@ class Menu:
                      String, Displayed below header
             content: Default or
                      String, Displayed below prompt, formatted as enumerated list or
-                     if frame_type="list": list, list of strings to be enumerated and formatted
+                     if frame_type="list": List, list of strings to be enumerated and formatted
 
         :return: None
         """

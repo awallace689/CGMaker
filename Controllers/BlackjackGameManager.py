@@ -1,6 +1,6 @@
 from Generics.ABCs import GameManagerABC, EndTurn, ExitCondition
 from Generics.Menu import Menu, check_int
-from GameBundles.BlackjackBundle.BlackjackGenericsMods import BlackjackNPC, BlackjackUser
+from GameBundles.BlackjackBundle.BlackjackGenericsMods import BlackjackNPC, BlackjackUser, BlackjackCard, BlackjackDeck
 from GameBundles.BlackjackBundle.BlackjackRules import BlackjackRules
 from random import shuffle
 
@@ -11,21 +11,6 @@ def make_user(bankroll=300):
 
 def make_npc(bankroll=300):
     return BlackjackNPC(bankroll)
-
-
-def catch_end(func):
-    """Catches ExitCondition exception and safely ignores it to begin next loop iteration
-
-    :param func: function capable of throwing exception Generics.ABCs.ExitCondition
-    :return: Return-type of 'func'
-    """
-    def wrapper(*args):
-        try:
-            return func(*args)
-
-        except EndTurn:
-            pass
-    return wrapper
 
 
 class BlackjackManager(GameManagerABC):
@@ -51,8 +36,12 @@ class BlackjackManager(GameManagerABC):
     def __init__(self, _menu=Menu()):
         super().__init__()
         self.menu = _menu
-        self._phases = [Phase(_menu=self.menu) for Phase in BlackjackRules.phase_list]
         self._players = []
+        self._dealer = BlackjackNPC()
+        self._deck = BlackjackDeck()
+        self._phases = [BlackjackRules.phase_list[0](self.menu),
+                        BlackjackRules.phase_list[1](self.menu, self._deck, self._dealer),
+                        BlackjackRules.phase_list[2](self.menu, self._dealer)]
 
     @property
     def playing(self):
@@ -100,28 +89,62 @@ class BlackjackManager(GameManagerABC):
         :param i: int, index
         :return: None
         """
-        assert self._players[i]
         self._players.pop(index=i)
 
-    @catch_end
     def run_on_playing(self):
         """Calls the appropriate BlackjackRules.BlackjackPhase.run_X method on each player in self.playing
 
         :return: None
         """
-        for phase in self._phases:
-            if len(self.playing) is 0:
-                raise ExitCondition
+        while len(list(filter(lambda p: isinstance(p, BlackjackUser), self.playing))) > 0:
+            self._phases[0].bets = {}
+            self._dealer.hand.cards = []
+            for player in self._players:
+                player.hand.cards = []
 
+            # Run BettingPhase on all playing to generate bets
             for player in self.playing:
-                if isinstance(player, BlackjackUser):
-                    phase.run_user(player)
+                try:
+                    self._phases[0].run_self(player)
 
-                elif isinstance(player, BlackjackNPC):
-                    phase.run_npc(player)
+                except EndTurn:
+                    self._phases[0].reset_methods()
+                    continue
 
-                else:
-                    raise ValueError
+            # Deal to all who bet and one to dealer
+            for _ in range(2):
+                for player in self._phases[0].bets.keys():
+                    self.deal(player)
+            self.deal(self._dealer)
+
+            # Run Main Phase on each player who bet in BettingPhase
+            for player in self._phases[0].bets.keys():
+                try:
+                    self._phases[1].run_self(player)
+
+                except EndTurn:
+                    self._phases[1].reset_methods()
+                    continue
+
+            # Dealer's Main Phase
+            while min(self._dealer.hand.get_totals()) < 17:
+                self.deal(self._dealer)
+
+            # Show Results
+            try:
+                self._phases[2].run_self(self._phases[0].bets)
+
+            except EndTurn:
+                continue
+        raise ExitCondition
+
+    def deal(self, player):
+        if self._deck.deck_size > 0:
+            player.hand.add(self._deck.draw_deck())
+
+        else:
+            self._deck = self._deck.new_deck()
+            player.hand.add(self._deck.draw_deck())
 
     def run(self):
         """Inherited method called in order to run Blackjack game.
@@ -130,14 +153,14 @@ class BlackjackManager(GameManagerABC):
         """
         self._players = [BlackjackUser()]
 
-        self.menu.add_frame(frame_type="custom",
-                            header="SETUP",
-                            prompt="How many other NPC's? (Max: 8)",
-                            content="Enter number:")
-        number_npc = self.menu.display(get_input=True,
-                                       check=lambda inp: True if check_int(inp) and int(inp) < 8 else False)
-
-        self.add_players(int(number_npc), player_type="npc")
-        shuffle(self._players)
+        # self.menu.add_frame(frame_type="custom",
+        #                     header="SETUP",
+        #                     prompt="How many other NPC's? (Max: 8)",
+        #                     content="Enter number:")
+        # number_npc = self.menu.display(get_input=True,
+        #                                check=lambda inp: True if check_int(inp) and int(inp) < 8 else False)
+        #
+        # self.add_players(int(number_npc), player_type="npc")
+        # shuffle(self._players)
 
         self.run_on_playing()

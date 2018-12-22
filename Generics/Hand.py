@@ -9,20 +9,21 @@ from Generics.Card import Card
 
 
 class Hand:
-    def __init__(self, other=None):
-        if other is not None:
-            assert isinstance(other, Hand)
-            self._cards = other.cards
+    def __init__(self, copy=None):
+        if copy is not None:
+            self._cards = copy.cards
         else:
             self._cards = []
 
     def __str__(self):
         string = ""
-        for card in self.cards:
-            string = ", " + string + str(card)
+        for i in range(len(self._cards)):
+            if i == len(self._cards) - 1:
+                string += str(self._cards[i]) + '\n'
 
-        string = string[2:]
-        return ("Length: %d\n" % len(self._cards)) + string
+            else:
+                string += str(self._cards[i]) + ', '
+        return string
 
     @property
     def cards(self):

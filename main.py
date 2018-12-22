@@ -1,5 +1,5 @@
 from Generics.Menu import Menu
-from Generics.ABCs import ExitCondition, EndTurn
+from Generics.ABCs import ExitCondition
 from sys import modules
 
 

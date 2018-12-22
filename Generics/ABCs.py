@@ -35,18 +35,15 @@ class PhaseABC(ABC):
     def __init__(self):
         pass
 
-    @property
-    @abstractmethod
-    def methods(self):
-        """Returns array of tuples '("name", Function object, "tooltip", Valid Option: Bool)'"""
-        pass
+    def run_self(self, arg):
+        if isinstance(arg, User):
+            self.run_user(arg)
 
-    def run_self(self, player):
-        if isinstance(player, User):
-            self.run_user(player)
+        elif isinstance(arg, NPC):
+            self.run_npc(arg)
 
-        if isinstance(player, NPC):
-            self.run_npc(player)
+        elif isinstance(arg, dict):
+            self.run_user(arg)
 
     @abstractmethod
     def run_user(self, player):

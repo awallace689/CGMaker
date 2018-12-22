@@ -34,8 +34,6 @@ class Suit(Enum):
 class Card:
     def __init__(self, rank=None, suit=None):
         if rank is not None or suit is not None:
-            assert isinstance(rank, Rank)
-            assert isinstance(suit, Suit)
             self._rank = rank
             self._suit = suit
 
@@ -49,7 +47,6 @@ class Card:
 
     @rank.setter
     def rank(self, r):
-        assert isinstance(r, Rank)
         self._rank = r
 
     @property
@@ -58,32 +55,25 @@ class Card:
 
     @suit.setter
     def suit(self, s):
-        assert isinstance(s, Suit)
         self._suit = s
 
     def __str__(self):
         return "%s of %ss" % (self._rank.name, self._suit.name)
 
-    def __lt__(self, other):                                    # TODO: remove instance checks
-        assert(isinstance(other, Card))
+    def __lt__(self, other):
         return self.rank.value < other.rank.value
 
     def __le__(self, other):
-        assert(isinstance(other, Card))
         return self.rank.value <= other.rank.value
 
     def __gt__(self, other):
-        assert(isinstance(other, Card))
         return self.rank.value > other.rank.value
 
     def __ge__(self, other):
-        assert(isinstance(other, Card))
         return self.rank.value >= other.rank.value
 
     def __eq__(self, other):
-        assert(isinstance(other, Card))
         return self.rank.value == other.rank.value
 
     def __ne__(self, other):
-        assert(isinstance(other, Card))
         return not (self == other)
