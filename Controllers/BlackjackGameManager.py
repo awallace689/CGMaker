@@ -18,8 +18,8 @@ class BlackjackManager(GameManagerABC):
 
     (*)<- Inherited
     :attributes:
-        *menu  : return Generics.Menu.Menu object, created in main.py, used throughout program
-        playing: return list of BlackjackNPC and/or BlackjackPlayer in '_players' with bankroll > 0
+        *menu  : Generics.Menu.Menu object shared throughout program
+        playing: list of BlackjackNPC and/or BlackjackPlayer in '_players' with bankroll > 0
 
     :methods:
         add_players(self, count: int, player_type=None, bankroll=300)
@@ -152,15 +152,4 @@ class BlackjackManager(GameManagerABC):
         :return: None
         """
         self._players = [BlackjackUser()]
-
-        # self.menu.add_frame(frame_type="custom",
-        #                     header="SETUP",
-        #                     prompt="How many other NPC's? (Max: 8)",
-        #                     content="Enter number:")
-        # number_npc = self.menu.display(get_input=True,
-        #                                check=lambda inp: True if check_int(inp) and int(inp) < 8 else False)
-        #
-        # self.add_players(int(number_npc), player_type="npc")
-        # shuffle(self._players)
-
         self.run_on_playing()
