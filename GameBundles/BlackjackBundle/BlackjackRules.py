@@ -198,7 +198,7 @@ class EndPhase(BlackjackPhase):
                 result = int(get_value(player))
 
             except ValueError:
-                return bet_dict[player] * (-1)
+                return 0
 
             try:
                 d_result = int(get_value(self.dealer))
@@ -210,7 +210,7 @@ class EndPhase(BlackjackPhase):
                 return bet_dict[player]
 
             elif d_result > result:
-                return bet_dict[player] * (-1)
+                return 0
 
             elif d_result < result:
                 return ceil(bet_dict[player] * 1.5)
@@ -232,9 +232,9 @@ class EndPhase(BlackjackPhase):
 
             player_list[i].bankroll += bet_dict[player_list[i]]
 
-            player_list[i].bankroll += get_result(player_list[i]) - bet_dict[player_list[i]] # TODO: Fix double counting
+            player_list[i].bankroll += get_result(player_list[i]) - bet_dict[player_list[i]]
 
-            results_string += f"\tNew Bankroll: {str(player_list[i].bankroll + get_result(player_list[i]))}\n" + \
+            results_string += f"\tNew Bankroll: {str(player_list[i].bankroll)}\n" + \
                               f"\tNet Change: {str(player_list[i].bankroll - 300)}"
 
         self.menu.add_frame(frame_type="list",
