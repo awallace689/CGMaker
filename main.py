@@ -1,3 +1,12 @@
+"""
+====================================================================================================
+@Author: Adam Wallace
+@Date: 1/30/2019
+@About: Stack-based Menu class and templates provided by Frame classes provide a clean,
+        multi-purpose console interface for user-interaction.
+@Note: Menu.display() automatically checks for valid input on provided templates.
+====================================================================================================
+"""
 from Generics.Menu import Menu
 from Generics.ABCs import ExitCondition
 from sys import modules

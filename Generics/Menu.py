@@ -1,3 +1,12 @@
+"""
+====================================================================================================
+@Author: Adam Wallace
+@Date: 1/30/2019
+@About: Stack-based Menu class and templates provided by Frame classes provide a clean,
+        multi-purpose console interface for user-interaction.
+@Note: Menu.display() automatically checks for valid input on provided templates.
+====================================================================================================
+"""
 from os import system
 from os import name as os_name
 
@@ -7,11 +16,11 @@ class Frame:
 
     :attributes:
         header: None
-                String, Displayed at top of frame as |FORMAT|
+                str, Displayed at top of frame as |FORMAT|
         prompt: None
-                String, Displayed below header
+                str, Displayed below header
         content: None
-                 String, Displayed below prompt
+                 str, Displayed below prompt
     """
     header = None
     prompt = None
@@ -22,11 +31,11 @@ class Frame:
 
         :kwargs:
             :param header: default: None
-                           String : short |TITLE| for frame
+                           str    : short |TITLE| for frame
             :param prompt: default: None
-                           String : Question/Description
+                           str    : Question/Description
             :param content: default: None
-                            String : List of options/text-image, etc.
+                            str   : List of options/text-image, etc.
         """
         self.header = header
         self.prompt = prompt
@@ -35,9 +44,9 @@ class Frame:
     def build(self):
         """Generate and return 'print_string' by formatting HEADER, PROMPT, CONTENT fields.
 
-        :return: String, consisting of |HEADER| followed by
-                                       PROMPT   followed by
-                                       CONTENT
+        :return: str, consisting of |HEADER| followed by
+                                    PROMPT   followed by
+                                    CONTENT
         """
         print_string = ''
         if self.header is not None:
@@ -53,27 +62,27 @@ class Frame:
 
 
 class EnumFrame(Frame):
-    """Extends Frame by formatting CONTENT field to be a string of an enumeration of a list of strings.
+    """Extends Frame by formatting CONTENT field to be a str of an enumeration of a list of strings.
 
     (*)<- Inherited
     :attributes:
         *header: None or
-                 String, Displayed at top of frame as |FORMAT|
+                 str, Displayed at top of frame as |FORMAT|
         *prompt: None or
-                 String, Displayed below header
+                 str, Displayed below header
         *content: None or
                   List of Strings, Displayed below prompt
         format_options(option_list)
-            format list of strings into a string containing a formatted, enumerated list
+            format list of strings into a str containing a formatted, enumerated list
     """
     def __init__(self, header=None, prompt=None, content=list()):
         """Create Frame with optional HEADER, PROMPT, and enumerated CONTENT fields.
 
         :kwargs:
             :param header: default: None
-                           String : short |TITLE| for frame
+                           str    : short |TITLE| for frame
             :param prompt: default: None
-                           String : Question/Description
+                           str    : Question/Description
             :param content: list of strings to be enumerated
         """
         super().__init__(header=header, prompt=prompt)
@@ -81,10 +90,10 @@ class EnumFrame(Frame):
 
     @staticmethod
     def format_options(option_list: list()):
-        """Format list of strings into string consisting of a formatted enumerated list.
+        """Format list of strings into str consisting of a formatted enumerated list.
 
         :param option_list: list, list of strings to be enumerated
-        :return: String, formatted enumerated list
+        :return: str, formatted enumerated list
         """
         content_string = ''
         for p in range(len(option_list)):
@@ -101,9 +110,9 @@ class BoolFrame(Frame):
 
     (*)<- Inherited
     :attributes:
-        *header : String, Displayed at top of frame as |FORMAT|
-        *prompt : String, Displayed below header
-        *content: String, Displayed below prompt
+        *header : str, Displayed at top of frame as |FORMAT|
+        *prompt : str, Displayed below header
+        *content: str, Displayed below prompt
     """
     def __init__(self, header=None, prompt=None, content=""):
         if content:
@@ -120,9 +129,9 @@ class ExitFrame(BoolFrame):
 
     (*)<- Inherited
     :attributes:
-        *header : String, Displayed at top of frame as |FORMAT|
-        *prompt : String, Displayed below header
-        *content: String, Displayed below prompt
+        *header : str, Displayed at top of frame as |FORMAT|
+        *prompt : str, Displayed below header
+        *content: str, Displayed below prompt
     """
     def __init__(self, header="EXIT", prompt="Are you sure you want to exit?", content=""):
         super().__init__(header=header, prompt=prompt, content=content)
@@ -133,9 +142,9 @@ class EndFrame(BoolFrame):
 
     (*)<- Inherited
     :attributes:
-        *header : String, Displayed at top of frame as |FORMAT|
-        *prompt : String, Displayed below header
-        *content: String, Displayed below prompt
+        *header : str, Displayed at top of frame as |FORMAT|
+        *prompt : str, Displayed below header
+        *content: str, Displayed below prompt
     """
     def __init__(self, header="END TURN", prompt="Are you sure you want to end your turn?", content=""):
         super().__init__(header=header, prompt=prompt, content=content)
@@ -148,14 +157,14 @@ class Menu:
         frame_stack: Stack of Frame objects
 
     :methods:
-        display(get_input=False, check=Function -> Bool, error=False)
+        display(get_input=False, check=Function(str) -> Bool, error=False)
             : print top-most frame, option to accept/check user input,
                                     automatically checks bounds when frame_type="list"
 
         add_frame(frame_type="custom")
             : add a frame of 'frame_type' to the top of 'Menu.frame_stack',
                                     add frame content with **kwargs 'header', 'prompt', and 'content'
-            **More kwargs in function documentation**
+            **See function definition for more information**
 
         pop_frame()
             : pop top frame off of frame_stack
@@ -169,22 +178,23 @@ class Menu:
         self._os = os_name
 
     def display(self, get_input=False, check=lambda inp: True, error=False):
-        """Print top of 'frame_stack', use 'get_input' to receive user input and 'check' to validate input.
-           Some validation built-in for different frame types. Pops frame_stack after input received.
+        """Clear console, print Frame on top of frame_stack. If get_input is True, user input is gathered,
+           returned, and frame_stack is popped.
+
 
         :**kwargs:
             :param get_input: Bool, default: display 'frame_stack[-1].build()'
-                                    =True  : display 'frame_stack[-1].build()' and return input string
+                                    =True  : display 'frame_stack[-1].build()', return input, pop frame_stack
 
             :param check: default: input always passes 'check'
-                          Function(arg: str) -> Bool=True : return input string
+                          Function(arg: str) -> Bool=True : return input str
                                                     =False: recursively re-display frame until input passes 'check'
                           *Note: Bool, Enum, Exit, and End frames all automatically check for valid input.*
 
             :param error: Bool, prints invalid input message if True when getting input
 
         :return: get_input=False: None
-                 get_input=True : String, user input
+                 get_input=True : str, user input
         """
         self.clear()
         print(self.frame_stack[-1].build())
@@ -196,7 +206,7 @@ class Menu:
                 u_in = input(">").strip()
 
             if check(u_in):
-                # frame-specific input checks
+                # type-specific input checks
                 if isinstance(self.frame_stack[-1], EnumFrame):
                     if check_int(u_in) and 0 < int(u_in) <= len(self.frame_stack[-1].content.split('\n')):
                         self.frame_stack.pop()
@@ -222,18 +232,18 @@ class Menu:
 
         :param frame_type:
             "custom" (default) : blank frame template
-            "bool"             : Returns True for 'y'/'Y', False for 'n'/'N'
+            "bool"             : Returns True for input 'y'/'Y', False for 'n'/'N'
             "list"             : enumerated list, kwarg 'content' must be list of strings or unassigned
             "exit"             : default exit-menu template
             "end"              : default turn-end template
 
         :**kwargs:
             header : Default or
-                     String, Displayed at top of frame as |FORMAT|
+                     str, Displayed at top of frame as |FORMAT|
             prompt : Default or
-                     String, Displayed below header
+                     str, Displayed below header
             content: Default or
-                     String, Displayed below prompt, formatted as enumerated list or
+                     str, Displayed below prompt, formatted as enumerated list or
                      if frame_type="list": List, list of strings to be enumerated and formatted
 
         :return: None

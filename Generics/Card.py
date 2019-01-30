@@ -2,7 +2,8 @@
 =====================================================================================================
 @Author: Adam Wallace
 @Date: 9/30/2018
-@About: Contains enums for possible card Ranks (King-high) and Suits, as well as Card class for use with DeckWrapper.py
+@About: Contains enums of possible card Ranks (King-high) and Suits, as well as a Card class for use
+        with DeckWrapper.py
 =====================================================================================================
 """
 from enum import Enum

@@ -2,7 +2,8 @@
 ====================================================================================================
 @Author: Adam Wallace
 @Date: 10/4/2018
-@About: Contains abstract base classes to ensure consistent communication methods within project.
+@About: Contains exceptions and abstract base classes relevant to overall project structure/design.
+@Note: Lightweight design allows for members to guide game development without restricting options.
 ====================================================================================================
 """
 from abc import ABC, abstractmethod

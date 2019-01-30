@@ -15,7 +15,7 @@ from random import shuffle as rshuffle
 class DeckWrapper:
 
     def __init__(self, other=None):
-        """If no parameter provided, deck will be automatically generated and shuffled."""
+        """If no DeckWrapper 'other' provided, deck will be automatically generated and shuffled."""
         if other is not None:
             assert isinstance(other, DeckWrapper)
             self._deck = other.deck
