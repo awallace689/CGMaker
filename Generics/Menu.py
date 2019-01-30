@@ -64,7 +64,7 @@ class EnumFrame(Frame):
         *content: None or
                   List of Strings, Displayed below prompt
         format_options(option_list)
-            format list of strings into a string containing a formatted enumerated list
+            format list of strings into a string containing a formatted, enumerated list
     """
     def __init__(self, header=None, prompt=None, content=list()):
         """Create Frame with optional HEADER, PROMPT, and enumerated CONTENT fields.
