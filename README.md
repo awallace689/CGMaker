@@ -40,7 +40,7 @@ CardGame's Implementation
     Contents:
      Generics: Generic classes which provide common functionality. Extended by GameBundles/GameRules.py.
         
-     GameBundles: Contains a GameBundle subdirectory containing /Generic/ extensions and a GameRules.py file.
+     GameBundles: Contains a GameBundle subdirectory containing /Generics/ extensions and a GameRules.py file.
         
      Controllers: Contains files which interact with a GameRules.py file and the user through the Menu class. 
                       Receives a list of Phases from file, the order in which to run them, and each Phase
