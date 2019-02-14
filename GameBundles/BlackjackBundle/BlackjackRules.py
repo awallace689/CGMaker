@@ -274,7 +274,7 @@ class MainPhase(BlackjackPhase):
     def reset_methods(self):
         """Resets methods altered due to player state
 
-        :return:
+        :return: None
         """
         for i in range(len(self._methods)):
             if i == 2:
