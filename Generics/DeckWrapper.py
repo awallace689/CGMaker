@@ -13,6 +13,9 @@ from random import shuffle as rshuffle
 
 
 class DeckWrapper:
+    """
+
+    """
 
     def __init__(self, other=None):
         """If no DeckWrapper 'other' provided, deck will be automatically generated and shuffled."""

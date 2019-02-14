@@ -27,6 +27,11 @@ class BlackjackDeck(DeckWrapper):
 
     @staticmethod
     def new_deck(shuffle=True):
+        """Returns new list of BlackjackCards
+
+        :param shuffle: Bool, calls random.shuffle() on list of cards if True
+        :return: List of 312 (52 * 6) BlackjackCards
+        """
         deck = []
         for s in Suit:
             for r in Rank:
@@ -57,7 +62,13 @@ class BlackjackRank(Enum):
 
 
 class BlackjackCard(Card):
-    """self._rank is object type Rank, self.rank returns object type BlackjackRank"""
+    """Extension of Card class for Blackjack Game
+    :properties:
+        true_rank
+            Returns corresponding Rank enum attribute
+        rank
+            Returns corresponding BlackjackRank enum attribute
+    """
     def __init__(self, rank=None, suit=None):
         super().__init__()
         self._rank = rank
@@ -81,10 +92,20 @@ class BlackjackCard(Card):
 
 
 class BlackjackHand(Hand):
+    """Extension of Hand class for Blackjack Game
+
+    :methods:
+        get_hand_str()
+            Returns BlackjackCard.__str__() for each card in self._cards, in-order
+    """
     def __init__(self):
         super().__init__()
 
     def get_hand_str(self):
+        """Returns BlackjackCard.__str__() for each card in self._cards, in-order
+
+        :return: string, comma separated list of each BlackjackCard.__str__()
+        """
         string = ""
         for i in range(len(self._cards)):
             if i != len(self._cards) - 1:
@@ -95,6 +116,10 @@ class BlackjackHand(Hand):
         return string
 
     def get_totals(self):
+        """Returns list of possible hand score totals for BlackjackGame
+
+        :return: list, contains int values for each possible hand score total
+        """
         totals = []
         aces = 0
 
@@ -110,6 +135,21 @@ class BlackjackHand(Hand):
 
 
 class BlackjackNPC(NPC):
+    """Extension of NPC class for BlackjackGame
+    :attributes:
+        bankroll
+            int, represents money held by player
+        hand
+            BlackjackHand, hand of cards held by player
+
+    :properties:
+        is_playing
+            Returns True if player has valid game state, else False
+
+    :methods:
+        take_bank(amount)
+            Returns int of given amount after subtracting it from BlackjackNPC.bankroll
+    """
     bankroll = None
     hand = BlackjackHand()
 
@@ -119,6 +159,12 @@ class BlackjackNPC(NPC):
         self._playing = True
 
     def take_bank(self, amount):
+        """Returns int of given amount after subtracting it from self.bankroll
+
+        :param amount: int, amount to take from self.bankroll
+        :return: int
+        :raises: NegativeBankroll, if (self.bankroll - amount) < 0
+        """
         if self.bankroll >= amount:
             self.bankroll -= amount
             return amount
@@ -128,6 +174,10 @@ class BlackjackNPC(NPC):
 
     @property
     def is_playing(self):
+        """Returns value of self._playing if False, else checks if self.bankroll is <= 0
+
+        :return: Bool
+        """
         if self._playing is False:
             return False
 
@@ -143,6 +193,22 @@ class BlackjackNPC(NPC):
 
 
 class BlackjackUser(User):
+    """Extension of the User class for BlackjackGame
+
+    :attributes:
+        bankroll
+            int, represents money held by player
+
+    :properties:
+        is_playing
+            Returns True if player has valid game state, else False
+
+    :methods:
+        take_bank(amount)
+                Returns int of given amount after subtracting it from BlackjackNPC.bankroll
+
+
+    """
     bankroll = None
 
     def __init__(self, start_bank=300):
@@ -152,6 +218,12 @@ class BlackjackUser(User):
         self.hand = BlackjackHand()
 
     def take_bank(self, amount):
+        """Returns int of given amount after subtracting it from self.bankroll
+
+        :param amount: int, amount to take from self.bankroll
+        :return: int
+        :raises: NegativeBankroll, if (self.bankroll - amount) < 0
+        """
         if self.bankroll >= amount:
             self.bankroll -= amount
             return amount
@@ -161,6 +233,10 @@ class BlackjackUser(User):
 
     @property
     def is_playing(self):
+        """Returns value of self._playing if False, else checks if self.bankroll is <= 0
+
+        :return: Bool
+        """
         if self._playing is False:
             return False
 

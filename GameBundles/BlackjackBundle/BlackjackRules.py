@@ -8,21 +8,26 @@ class BlackjackPhase(PhaseABC):
     """Superclass for all Blackjack phases. Contains abstract methods required for
 
     :attributes:
-        methods: return list of tuples containing player options [("name", Function object, "tooltip", Bool)]
-        options: return list of tuples containing unselected player options (to prevent repeat selections)
-        menu   : Menu object shared by program
+        menu: Menu object used throughout program for user-interaction
+        _methods: return list of tuples containing player options [("name", Function object, "tooltip", Bool)]
+        menu: Menu object shared by program
+        name: string identifying name of phase
+
+    :properties:
+        options: return list of tuples containing unselected player options
 
     :methods:
         run_user(player)
             runs User implementation of phase on 'player'
 
-    :abstractmethods:
         run_npc(player)
             runs NPC implementation of phase on 'player'
 
-    :methods:
         end_turn()
-            resets self.methods and raises EndTurn exception, use as "EndTurn" option in (subclass).methods
+            confirms user selection, resets self.methods and raises EndTurn exception
+
+        exit()
+            confirms user selection, raises ExitCondition exception
     """
     menu = None
     name = None
@@ -34,29 +39,56 @@ class BlackjackPhase(PhaseABC):
 
     @property
     def options(self):
+        """Return list of tuples containing unselected player options (to prevent repeat selections)
+
+        :return: List, containing tuples from self._methods with index 3 = True
+        """
         return list(filter(lambda tup: tup[3], self._methods))
 
     def reset_methods(self):
+        """Resets self._methods[3] = True for every item in self._methods
+
+        :return: None
+        """
         for tup in self._methods:
             tup[3] = True
 
     def run_npc(self, player):
+        """Phase implementation for BlackjackNPCs
+
+        :param player: BlackjackNPC, player to run phase on
+        :return: None
+        """
         pass
 
     def run_user(self, player):
+        """Phase implementation for Users
+
+        :param player: BlackjackUser, player to run phase on
+        :return: None
+        """
         pass
 
     def end_turn(self, *args):
+        """Confirm intention with user, reset self._methods and raise EndTurn exception
+
+        :return: None
+        :raises: EndTurn, if user confirms selection
+        """
         self.menu.add_frame(frame_type="end")
         u_in = self.menu.display(get_input=True)
         if u_in:
             raise EndTurn
 
     def exit(self, *args):
+        """Confirm intention with user, reset self._methods and raise EndTurn exception
+
+        :return: None
+        :raises: ExitCondition, if user confirms selection
+        """
         self.menu.add_frame(frame_type="exit")
         choice = self.menu.display(get_input=True)
 
-        print(choice)
         if choice:
             raise ExitCondition
 
@@ -64,10 +96,24 @@ class BlackjackPhase(PhaseABC):
 class BettingPhase(BlackjackPhase):
     """First Blackjack phase, gathers bets from each player
 
-    (*)<- Inherited
     :attributes:
-        *menu: Menu object shared throughout program objects
-        *bets: Dictionary of {player:bet}
+        menu: Menu object used throughout program for user-interaction
+        _methods: return list of tuples containing player options [("name", Function object, "tooltip", Bool)]
+        bets: Dictionary of {Player: int}
+        name: String identifying name of phase
+
+    :methods:
+        run_user(player)
+            runs User implementation of phase on 'player'
+
+        run_npc(player)
+            runs NPC implementation of phase on 'player'
+
+        end_turn()
+            confirms user selection, resets self.methods and raises EndTurn exception
+
+        get_bet()
+            asks user for bet, checks if valid
     """
     bets = dict()
     name = "Betting Phase"
@@ -83,6 +129,11 @@ class BettingPhase(BlackjackPhase):
         pass
 
     def run_user(self, player: BlackjackUser):
+        """Collect valid bets from 'player'
+
+        :param player: BlackjackNPC, player to run phase on
+        :return: None
+        """
         while len(self.options) > 2:
             self.menu.add_frame(frame_type="list",
                                 header=self.name,
@@ -94,6 +145,11 @@ class BettingPhase(BlackjackPhase):
         self.reset_methods()
 
     def get_bet(self, player):
+        """Take user-input amount from player.bankroll and add to self.bets
+
+        :param player: BlackjackNPC, player to collect bet from
+        :return:
+        """
         self.menu.add_frame(frame_type="custom",
                             header="PLACE BET",
                             prompt=f"How much would you like to bet? (Max: {player.bankroll})\n"
@@ -108,6 +164,11 @@ class BettingPhase(BlackjackPhase):
             self._methods[0][3] = False
 
     def end_turn(self, player):
+        """Confirm intention with user, reset self._methods and raise EndTurn exception
+
+        :return: None
+        :raises: EndTurn, if user confirms selection
+        """
         warning = "Are you sure you want to end your turn?"
         if player not in self.bets.keys():
             warning += " You will sit this round out if you do not bet!"
@@ -119,6 +180,34 @@ class BettingPhase(BlackjackPhase):
 
 
 class MainPhase(BlackjackPhase):
+    """Second Blackjack phase, allows user to hit until they choose to stand
+
+        :attributes:
+            menu: Menu class used throughout program for user-interaction
+            _methods: return list of tuples containing player options [("name", Function object, "tooltip", Bool)]
+            deck: BlackjackDeck class for use with phase methods
+            dealer: Dealer class for use with phase methods
+            name: String identifying name of phase
+
+        :methods:
+            run_user(player)
+                runs User implementation of phase on 'player'
+
+            run_npc(player)
+                runs NPC implementation of phase on 'player'
+
+            end_turn()
+                confirms user selection, resets self.methods and raises EndTurn exception
+
+            get_bet()
+                asks user for bet, checks if valid
+
+            hit(player)
+                add card to player hand
+
+            stand()
+                raise EndTurn exception
+        """
 
     name = "Main Phase"
 
@@ -132,18 +221,26 @@ class MainPhase(BlackjackPhase):
         self.dealer = dealer
 
     def run_user(self, player):
+        """Keep track of hand total while allowing player to hit/stand
+
+        :param player: BlackjackUser, player to run phase on
+        :return: None
+        """
         while len(self.options):
+            # if hand total is > 20, disable hit/stand option
             if min(player.hand.get_totals()) > 20:
                 self._methods[0][3] = False
                 self._methods[1][3] = False
                 self._methods[2][3] = True
 
+            # calculate hand totals
             d_hand_string = self.dealer.hand.get_hand_str()
             d_totals_string = str(self.dealer.hand.get_totals())[1:-1]
 
             hand_string = player.hand.get_hand_str()
             totals_string = str(player.hand.get_totals())[1:-1]
 
+            # user selects option
             self.menu.add_frame(frame_type="list",
                                 header=self.name,
                                 prompt=f"Dealer hand: {d_hand_string}\nDealer Total(s): {d_totals_string}\n\n"
@@ -154,6 +251,11 @@ class MainPhase(BlackjackPhase):
         self.reset_methods()
 
     def hit(self, player):
+        """Add card to player.hand
+
+        :param player: BlackjackUser or BlackjackNPC
+        :return: None
+        """
         if self.deck.deck_size > 0:
             player.hand.add(self.deck.draw_deck())
 
@@ -162,9 +264,18 @@ class MainPhase(BlackjackPhase):
             player.hand.add(self.deck.draw_deck())
 
     def stand(self, *args):
+        """End current turn
+
+        :return: None
+        :raises: EndTurn
+        """
         raise EndTurn
 
     def reset_methods(self):
+        """Resets
+
+        :return:
+        """
         for i in range(len(self._methods)):
             if i == 2:
                 self._methods[i][3] = False
@@ -174,6 +285,27 @@ class MainPhase(BlackjackPhase):
 
 
 class EndPhase(BlackjackPhase):
+    """First Blackjack phase, gathers bets from each player
+
+        :attributes:
+            menu: Menu object used throughout program for user-interaction
+            _methods: return list of tuples containing player options [("name", Function object, "tooltip", Bool)]
+            bets: Dictionary of {Player: int}
+            name: String identifying name of phase
+
+        :methods:
+            run_user(player)
+                runs User implementation of phase on 'player'
+
+            run_npc(player)
+                runs NPC implementation of phase on 'player'
+
+            end_turn()
+                confirms user selection, resets self.methods and raises EndTurn exception
+
+            get_bet()
+                asks user for bet, checks if valid
+        """
     name = "Results"
 
     def __init__(self, _menu: Menu, dealer: BlackjackNPC):
@@ -183,9 +315,19 @@ class EndPhase(BlackjackPhase):
         self.dealer = dealer
 
     def run_user(self, bet_dict):
+        """Display results screen to User, change bankroll accordingly
+
+        :param bet_dict: dict, collection of bets made by each user
+        :return: None
+        """
         results_string = ""
 
         def get_value(player):
+            """Determine if user busts, else return max in player.hand.get_totals()
+
+            :param player: BlackjackUser
+            :return: string, best value of hand to display to user
+            """
             totals = player.hand.get_totals()
             if min(totals) > 21:
                 return str(min(totals)) + ", Bust!"
@@ -194,6 +336,11 @@ class EndPhase(BlackjackPhase):
                 return str(max([totals[_i] for _i in range(len(totals)) if totals[_i] < 22]))
 
         def get_result(player):
+            """Compare dealer hand value to user hand value, return int for change in player.bankroll
+
+            :param player: BlackjackUser or BlackjackNPC
+            :return: int, change to apply to player.bankroll
+            """
             try:
                 result = int(get_value(player))
 
@@ -215,6 +362,7 @@ class EndPhase(BlackjackPhase):
             elif d_result < result:
                 return ceil(bet_dict[player] * 1.5)
 
+        # display result of round
         results_string += f"DEALER:\n\tHand: {str(self.dealer.hand)}\tHand Total: {str(get_value(self.dealer))}\n"
 
         for i in range(len(bet_dict.keys())):
@@ -230,6 +378,7 @@ class EndPhase(BlackjackPhase):
                               f"\tBet: {str(bet_dict[player_list[i]])}\n" +         \
                               f"\tWinnings: {str(get_result(player_list[i]))}\n"
 
+            # edit player.bankroll for each player
             player_list[i].bankroll += bet_dict[player_list[i]]
 
             player_list[i].bankroll += get_result(player_list[i]) - bet_dict[player_list[i]]
@@ -249,6 +398,11 @@ class EndPhase(BlackjackPhase):
 
 
 class BlackjackRules(RulesABC):
+    """List of phases to run, in-order
+
+    :attributes:
+        phase_list: List containing each phase to run in BlackjackGameManager, in-order
+    """
     phase_list = [BettingPhase, MainPhase, EndPhase]
 
     def __init__(self):

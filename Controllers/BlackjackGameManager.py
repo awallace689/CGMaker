@@ -92,17 +92,18 @@ class BlackjackManager(GameManagerABC):
         self._players.pop(index=i)
 
     def run_on_playing(self):
-        """Calls the appropriate BlackjackRules.BlackjackPhase.run_X method on each player in self.playing
+        """Calls each BlackjackRules.BlackjackPhase.run_X method on each valid player in self.playing
 
         :return: None
         """
         while len(list(filter(lambda p: isinstance(p, BlackjackUser), self.playing))) > 0:
+
             self._phases[0].bets = {}
             self._dealer.hand.cards = []
             for player in self._players:
                 player.hand.cards = []
 
-            # Run BettingPhase on all playing to generate bets
+            # Run BettingPhase on all in self.playing to generate bets
             for player in self.playing:
                 try:
                     self._phases[0].run_self(player)
