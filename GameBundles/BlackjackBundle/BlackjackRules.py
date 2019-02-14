@@ -5,7 +5,7 @@ from math import ceil
 
 
 class BlackjackPhase(PhaseABC):
-    """Superclass for all Blackjack phases. Contains abstract methods required for
+    """Superclass for all Blackjack phases.
 
     :attributes:
         menu: Menu object used throughout program for user-interaction
