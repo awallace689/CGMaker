@@ -272,7 +272,7 @@ class MainPhase(BlackjackPhase):
         raise EndTurn
 
     def reset_methods(self):
-        """Resets
+        """Resets methods altered due to player state
 
         :return:
         """
