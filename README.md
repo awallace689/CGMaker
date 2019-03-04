@@ -24,7 +24,7 @@ Why make CardGame?
 
 CardGame's Goal
 
-    The large amount of inherited functionality by design allows for rapid GameBundle development. It's 
+    The large amount of inherited functionality by design allows for rapid GameBundle development. Its 
     benefits so far are best exemplified by the Blackjack implementation. 
     
     CardGame/GameBundle/BlackjackBundle/ only needs to slightly extend the functionality of some generic 
